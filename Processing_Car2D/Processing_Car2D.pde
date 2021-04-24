@@ -14,7 +14,7 @@
 // scroll : scroll the background image infinity
 // scrollSpeed : background image scroll speed
 
-int gameScreen = 0;
+int gameScreen = 1;
 int difficulty = 2;
 float scroll = 0;
 float scrollSpeed = 15.0;
@@ -44,7 +44,7 @@ void setup() {
   rectMode(CENTER);
   setImages(); // load images
   setButton(); // create Button
-  myCar = new Car(360, 240, 40, 60, color(255, 100, 100));
+  myCar = new Car(200, 120, 40, 60, color(255, 100, 100));
 }
 
 void draw() {
@@ -352,7 +352,7 @@ class Car {
     pushMatrix();
     fill(carColor);
     translate(carX, carY);
-    rotate(carRot);
+    //rotate(carRot);
     rect(carX, carY, carW, carH);
     popMatrix();
   }
@@ -362,10 +362,10 @@ class Car {
       carSpeed = inertia -= .025;
     }
     if (bLeft == true) {
-      carRot += .025;
+      carRot -= .025;
     }
     if (bRight == true) {
-      carRot -= .025;
+      carRot += .025;
     }
     if (bBrake == true) {
       carSpeed += .05;
@@ -375,8 +375,10 @@ class Car {
     }
 
     carSpeed = constrain(carSpeed, -5, 3); // speed -3 ~ 5
-    carX += sin(carRot) * carSpeed;
-    carY += cos(carRot) * carSpeed;
+    //carX += sin(carRot) * carSpeed;
+    //carY += cos(carRot) * carSpeed;
+    carX += carRot * carSpeed;
+    carY += carRot * carSpeed;
     load();
     println(carRot);
   }
