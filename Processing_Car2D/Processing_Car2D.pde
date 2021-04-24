@@ -14,7 +14,7 @@
 // scroll : scroll the background image infinity
 // scrollSpeed : background image scroll speed
 
-int gameScreen = 1;
+int gameScreen = 0;
 int difficulty = 2;
 float scroll = 0;
 float scrollSpeed = 15.0;
@@ -375,6 +375,7 @@ class Car {
     }
 
     carSpeed = constrain(carSpeed, -5, 3); // speed -3 ~ 5
+    carRot = constrain(carRot, -1, 1);
     //carX += sin(carRot) * carSpeed;
     //carY += cos(carRot) * carSpeed;
     carX += carRot * carSpeed;
