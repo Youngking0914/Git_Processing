@@ -348,10 +348,10 @@ class Car {
       carSpeed = inertia -= .05;
     }
     if (bLeft == true) {
-      carRot -= .025;
+      carRot += .025;
     }
     if (bRight == true) {
-      carRot += .025;
+      carRot -= .025;
     }
     if (bBrake == true) {
       carSpeed += .05;
