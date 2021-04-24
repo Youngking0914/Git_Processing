@@ -80,10 +80,10 @@ void setButton() {
   startBtn = new Button(360, 260, 100, 40, "START", buttonColor);
   settingBtn = new Button(360, 320, 100, 40, "Setting", buttonColor);
   exitBtn = new Button(360, 380, 100, 40, "EXIT", buttonColor);
-  difficultyEasyBtn = new Button(190, 400, 100, 40, "Easy", buttonColor);
-  difficultyNormalBtn = new Button(310, 400, 100, 40, "Normal", buttonColor);
-  difficultyHardBtn = new Button(430, 400, 100, 40, "Hard", buttonColor);
-  previousBtn = new Button(50, 400, 100, 40, "Previous", buttonColor);
+  difficultyEasyBtn = new Button(240, 400, 100, 40, "Easy", buttonColor);
+  difficultyNormalBtn = new Button(360, 400, 100, 40, "Normal", buttonColor);
+  difficultyHardBtn = new Button(480, 400, 100, 40, "Hard", buttonColor);
+  previousBtn = new Button(110, 400, 100, 40, "Previous", buttonColor);
 }
 
 /************************************************/
@@ -139,8 +139,11 @@ public void mousePressed() {
   // process in muneScreen
   if (gameScreen == 0) {
     if (startBtn.isClicked(mouseX, mouseY)) {
+      startBtn.changeColorPressed();
     } else if (settingBtn.isClicked(mouseX, mouseY)) {
+      settingBtn.changeColorPressed();
     } else if (exitBtn.isClicked(mouseX, mouseY)) {
+      exitBtn.changeColorPressed();
     }
   }
   // process in gameScreen
@@ -149,9 +152,13 @@ public void mousePressed() {
   // process in settingScreen
   else if (gameScreen == 2) {
     if (previousBtn.isClicked(mouseX, mouseY)) {
+      previousBtn.changeColorPressed();
     } else if (difficultyEasyBtn.isClicked(mouseX, mouseY)) {
+      difficultyEasyBtn.changeColorPressed();
     } else if (difficultyNormalBtn.isClicked(mouseX, mouseY)) {
+      difficultyNormalBtn.changeColorPressed();
     } else if (difficultyHardBtn.isClicked(mouseX, mouseY)) {
+      difficultyHardBtn.changeColorPressed();
     }
   }
   println("mousePressed() Event is called (" + mouseX + ", " + mouseY + ")");
@@ -160,11 +167,13 @@ public void mousePressed() {
 public void mouseReleased() {
   // process in muneScreen
   if (gameScreen == 0) {
+    // the color of button is return to origin
+    startBtn.changeColorReleased();
+    settingBtn.changeColorReleased();
+    exitBtn.changeColorReleased();
     if (startBtn.isClicked(mouseX, mouseY)) {
-      startBtn.btnColor = buttonColor; // the color of button is return to origin
       gameScreen = 1;
     } else if (settingBtn.isClicked(mouseX, mouseY)) {
-      settingBtn.btnColor = buttonColor; // the color of button is return to origin
       gameScreen = 2;
     } else if (exitBtn.isClicked(mouseX, mouseY)) {
       exit();
@@ -177,17 +186,18 @@ public void mouseReleased() {
 
   // process in settingScreen
   else if (gameScreen == 2) {
+    // the color of button is return to origin
+    previousBtn.changeColorReleased();
+    difficultyEasyBtn.changeColorReleased();
+    difficultyNormalBtn.changeColorReleased();
+    difficultyHardBtn.changeColorReleased();
     if (previousBtn.isClicked(mouseX, mouseY)) {
-      previousBtn.btnColor = buttonColor; // the color of button is return to origin
       gameScreen = 0;
     } else if (difficultyEasyBtn.isClicked(mouseX, mouseY)) {
-      difficultyEasyBtn.btnColor = buttonColor; // the color of button is return to origin
       difficulty = 1;
     } else if (difficultyNormalBtn.isClicked(mouseX, mouseY)) {
-      difficultyNormalBtn.btnColor = buttonColor; // the color of button is return to origin
       difficulty = 2;
     } else if (difficultyHardBtn.isClicked(mouseX, mouseY)) {
-      difficultyHardBtn.btnColor = buttonColor; // the color of button is return to origin
       difficulty = 3;
     }
   }
@@ -276,6 +286,7 @@ class Button {
   int btnW; // Width of Button
   int btnH; // height of Button
   color btnColor; // color of Button
+  color btnCurColor; // current Color of Button
   String btnName; // name of Button
 
   // constructor
@@ -285,13 +296,14 @@ class Button {
     this.btnW = inputW;
     this.btnH = inputH;
     this.btnColor = inputColor;
+    this.btnCurColor = btnColor;
     this.btnName = inputName;
   }
 
   //create Button
   void create() {
     noStroke();
-    fill(btnColor);
+    fill(btnCurColor);
     rect(btnX, btnY, btnW, btnH);
     fill(0);
     textAlign(CENTER, CENTER);
@@ -300,18 +312,20 @@ class Button {
   }
 
   boolean isClicked(int inputX, int inputY) {
-    //
-    if (btnX < inputX && inputX < btnX + btnW && btnY < inputY && inputY < btnY + btnH) {
-      /**** When button is clicked, ***********/
-      /**** the color of button is changed ****/
-      float r = red(this.btnColor);
-      float g = green(this.btnColor);
-      float b = blue(this.btnColor);
-      this.btnColor = color(r-50, g-50, b-50);
-      /**********/
+    if (inputX > btnX - (btnW / 2) && inputX < btnX + (btnW / 2) && inputY > btnY - (btnH / 2) && inputY < btnY + (btnH / 2)) {
       return true;
-    } else
-      return false;
+    } else 
+    return false;
+  }
+  
+  void changeColorPressed() {
+    float r = red(this.btnCurColor);
+    float g = green(this.btnCurColor);
+    float b = blue(this.btnCurColor);
+    this.btnCurColor = color(r-50, g-50, b-50);
+  }
+  void changeColorReleased() {
+    this.btnCurColor = btnColor;
   }
 }
 
@@ -345,7 +359,7 @@ class Car {
 
   void move() {
     if (bAccel == true) {
-      carSpeed = inertia -= .05;
+      carSpeed = inertia -= .025;
     }
     if (bLeft == true) {
       carRot += .025;
@@ -360,7 +374,7 @@ class Car {
      carSpeed += .025;
     }
 
-    carSpeed = constrain(carSpeed, -6, 2); // speed -2 ~ 6
+    carSpeed = constrain(carSpeed, -5, 3); // speed -3 ~ 5
     carX += sin(carRot) * carSpeed;
     carY += cos(carRot) * carSpeed;
     load();
