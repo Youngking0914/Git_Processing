@@ -37,6 +37,13 @@ Button previousBtn;
 
 Car myCar;
 
+/**TEST**/
+PVector car2;
+float rot;
+float speed;
+boolean leftBoolean, rightBoolean, speedBoolean; 
+/*********/
+
 void setup() {
   size(720, 480);
   smooth();
@@ -44,7 +51,9 @@ void setup() {
   rectMode(CENTER);
   setImages(); // load images
   setButton(); // create Button
-  myCar = new Car(200, 120, 40, 60, color(255, 100, 100));
+  //myCar = new Car(300, 120, 40, 60, color(255, 100, 100));
+  car2 = new PVector(width/2, height/2); //TEST
+  speed = 0; //TEST
 }
 
 void draw() {
@@ -111,8 +120,26 @@ void gameScreen() {
   if (scroll >= height) scroll = 0;
 
   /**** Objects *****/
-  //rect(400,380,40,60, color(0,255,0));
-
+  //rect(50,50,40,60, color(0,255,0));
+  
+  /****************/
+  /*****TEST*******/
+  /****************/
+  car2.x +=  sin(rot)*(speed); // current location + the next "step"
+  car2.y +=  cos(rot)*(speed);
+  pushMatrix();
+  translate(car2.x, car2.y);
+  fill(255);
+  rotate(rot * -1);
+  rect(car2.x, car2.y, 40, 60);
+  popMatrix();
+  
+  
+  
+  /*****************/
+  
+  
+  
   myCar.move();
   //println(myCar.carX + ", " + myCar.carY);
 }
@@ -350,37 +377,56 @@ class Car {
 
   void load() {
     pushMatrix();
+    translate((carX+carW)/2, (carY+carH)/2);
     fill(carColor);
-    translate(carX, carY);
-    //rotate(carRot);
+    rotate(carRot * -1);
     rect(carX, carY, carW, carH);
     popMatrix();
   }
 
   void move() {
+    if (carX < 0 ) {
+      carX = height;
+    }
+    if (carX > height) {
+      carX = 0;
+    }
+    if (carY < 0 ) {
+      carY = width;
+    }  
+    if (  carY > width) {
+      carY = 0;
+    }
+    
     if (bAccel == true) {
       carSpeed = inertia -= .025;
     }
     if (bLeft == true) {
-      carRot -= .025;
+      carRot -= .02;
     }
     if (bRight == true) {
-      carRot += .025;
+      carRot += .02;
     }
     if (bBrake == true) {
-      carSpeed += .05;
+      carSpeed += .025;
     }
     else {
-     carSpeed += .025;
+      //if (carSpeed == 0)
+      //  return;
+      //if (carSpeed > 0)
+      //  carSpeed -= 0.01;
+      // else if (carSpeed < 0)
+      //   carSpeed += 0.01;
+      
     }
 
-    carSpeed = constrain(carSpeed, -5, 3); // speed -3 ~ 5
-    carRot = constrain(carRot, -1, 1);
-    //carX += sin(carRot) * carSpeed;
-    //carY += cos(carRot) * carSpeed;
-    carX += carRot * carSpeed;
-    carY += carRot * carSpeed;
+    carSpeed = constrain(carSpeed, -3, 0); // speed 0 ~ 5
+    carRot = constrain(carRot, -5, 5);
+    carX += sin(carRot) * carSpeed;
+    carY += cos(carRot) * carSpeed;
+    //carX += carRot * carSpeed;
+    //carY += carRot * carSpeed;
     load();
-    println(carRot);
+    println(carX, carY);
   }
 }

@@ -26,6 +26,7 @@ void draw() {
   println(cos(rot) + ", " + sin(rot));
   println(rot);
   //ship
+  /***
   pushMatrix();
   fill(255);
   translate(car.x, car.y); 
@@ -40,6 +41,7 @@ void draw() {
   ellipse(29, 5, 10, 10);
   ellipse(29, -5, 10, 10);
   popMatrix();  
+  ***/
   
   //반대 반향으로 다시 나오게 한다.
   if (car.x < 0 ){
