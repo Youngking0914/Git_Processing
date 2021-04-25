@@ -17,7 +17,7 @@
 int gameScreen = 0;
 int difficulty = 2;
 float scroll = 0;
-float scrollSpeed = 50.0;
+float scrollSpeed = 15.0;
 
 boolean bAccel, bBrake, bLeft, bRight;
 
@@ -37,14 +37,23 @@ Button previousBtn;
 
 Car myCar;
 
+/**TEST**/
+PVector car2;
+float rot;
+float speed;
+boolean leftBoolean, rightBoolean, speedBoolean; 
+/*********/
+
 void setup() {
-  size(720, 900);
+  size(720, 480);
   smooth();
-  frameRate(60);
+  frameRate(30);
   rectMode(CENTER);
   setImages(); // load images
   setButton(); // create Button
-  myCar = new Car(360, 240, 40, 60, color(255, 100, 100));
+  //myCar = new Car(300, 120, 40, 60, color(255, 100, 100));
+  car2 = new PVector(width/2, height/2); //TEST
+  speed = 0; //TEST
 }
 
 void draw() {
@@ -110,7 +119,29 @@ void gameScreen() {
   scroll += scrollSpeed;
   if (scroll >= height) scroll = 0;
 
+  /**** Objects *****/
+  //rect(50,50,40,60, color(0,255,0));
+  
+  /****************/
+  /*****TEST*******/
+  /****************/
+  car2.x +=  sin(rot)*(speed); // current location + the next "step"
+  car2.y +=  cos(rot)*(speed);
+  pushMatrix();
+  translate(car2.x, car2.y);
+  fill(255);
+  rotate(rot * -1);
+  rect(car2.x, car2.y, 40, 60);
+  popMatrix();
+  
+  
+  
+  /*****************/
+  
+  
+  
   myCar.move();
+  //println(myCar.carX + ", " + myCar.carY);
 }
 
 void settingScreen() {
@@ -333,8 +364,7 @@ class Car {
   float carSpeed = 0.0;
   float carRot = 0.0;
   color carColor;
-  PImage carImg;
-  
+
   float inertia; // gwanseong
 
   public Car(int startX, int startY, int inputW, int inputH, color inputColor) {
@@ -347,45 +377,40 @@ class Car {
 
   void load() {
     pushMatrix();
-    translate(carX, carY);
+    translate((carX+carW)/2, (carY+carH)/2);
     fill(carColor);
-    rotate(carRot);
-    rect(0, 0, carW, carH);
+    rotate(carRot * -1);
+    rect(carX, carY, carW, carH);
     popMatrix();
   }
 
   void move() {
-    carX += sin(carRot) * carSpeed;
-    carY -= cos(carRot) * carSpeed;
-    load();
-    
-    if (carX < 145 ) {
-      carX = 145;
+    if (carX < 0 ) {
+      carX = height;
     }
-    if (carX > 570) {
-      carX = 570;
+    if (carX > height) {
+      carX = 0;
     }
     if (carY < 0 ) {
-      carY = height;
+      carY = width;
     }  
-    if (  carY > height) {
+    if (  carY > width) {
       carY = 0;
     }
     
     if (bAccel == true) {
-      carSpeed = inertia += .1;
+      carSpeed = inertia -= .025;
     }
     if (bLeft == true) {
-      carRot -= .065;
+      carRot -= .02;
     }
     if (bRight == true) {
-      carRot += .065;
+      carRot += .02;
     }
     if (bBrake == true) {
-      carSpeed -= .3;
+      carSpeed += .025;
     }
     else {
-      carSpeed -= .25;
       //if (carSpeed == 0)
       //  return;
       //if (carSpeed > 0)
@@ -395,12 +420,13 @@ class Car {
       
     }
 
-    carSpeed = constrain(carSpeed, 0, 8); // speed 0 ~ 5
-    //carRot = constrain(carRot, -5, 5);
-    
+    carSpeed = constrain(carSpeed, -3, 0); // speed 0 ~ 5
+    carRot = constrain(carRot, -5, 5);
+    carX += sin(carRot) * carSpeed;
+    carY += cos(carRot) * carSpeed;
     //carX += carRot * carSpeed;
     //carY += carRot * carSpeed;
-    
+    load();
     println(carX, carY);
   }
 }
