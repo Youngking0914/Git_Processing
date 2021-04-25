@@ -42,9 +42,10 @@ void setup() {
   smooth();
   frameRate(60);
   rectMode(CENTER);
-  setImages(); // load images
+  setImage(); // load images
   setButton(); // create Button
-  myCar = new Car(360, 240, 40, 60, color(255, 100, 100));
+  setObject(); // create cars
+ 
 }
 
 void draw() {
@@ -70,7 +71,7 @@ void draw() {
 /*                  Initialize                  */
 /************************************************/
 
-void setImages() {
+void setImage() {
   menuScreenImg = loadImage("menuScreenImg.png");
   gameScreenImg = loadImage("gameScreenImg.png");
   settingScreenImg = loadImage("settingScreenImg.jpg");
@@ -84,6 +85,10 @@ void setButton() {
   difficultyNormalBtn = new Button(360, 400, 100, 40, "Normal", buttonColor);
   difficultyHardBtn = new Button(480, 400, 100, 40, "Hard", buttonColor);
   previousBtn = new Button(110, 400, 100, 40, "Previous", buttonColor);
+}
+
+void setObject() {
+   myCar = new Car(360, 240, 40, 60, color(255, 100, 100));
 }
 
 /************************************************/
