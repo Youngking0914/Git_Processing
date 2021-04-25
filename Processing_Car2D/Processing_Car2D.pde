@@ -45,7 +45,6 @@ void setup() {
   setImage(); // load images
   setButton(); // create Button
   setObject(); // create cars
- 
 }
 
 void draw() {
@@ -391,21 +390,9 @@ class Car {
     }
     else {
       carSpeed -= .25;
-      //if (carSpeed == 0)
-      //  return;
-      //if (carSpeed > 0)
-      //  carSpeed -= 0.01;
-      // else if (carSpeed < 0)
-      //   carSpeed += 0.01;
-      
     }
 
-    carSpeed = constrain(carSpeed, 0, 8); // speed 0 ~ 5
-    //carRot = constrain(carRot, -5, 5);
-    
-    //carX += carRot * carSpeed;
-    //carY += carRot * carSpeed;
-    
+    carSpeed = constrain(carSpeed, 0, 8); // speed 0 ~ 8
     println(carX, carY);
   }
 }
