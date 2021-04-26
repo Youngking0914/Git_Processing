@@ -69,13 +69,13 @@ void setImage() {
 }
 
 void setButton() {
-  startBtn = new Button(360, 260, 100, 40, "START", buttonColor);
-  settingBtn = new Button(360, 320, 100, 40, "Setting", buttonColor);
-  exitBtn = new Button(360, 380, 100, 40, "EXIT", buttonColor);
-  difficultyEasyBtn = new Button(240, 400, 100, 40, "Easy", buttonColor);
-  difficultyNormalBtn = new Button(360, 400, 100, 40, "Normal", buttonColor);
-  difficultyHardBtn = new Button(480, 400, 100, 40, "Hard", buttonColor);
-  previousBtn = new Button(110, 400, 100, 40, "Previous", buttonColor);
+  startBtn = new Button(360, 350, 100, 40, "START", buttonColor);
+  settingBtn = new Button(360, 410, 100, 40, "Setting", buttonColor);
+  exitBtn = new Button(360, 470, 100, 40, "EXIT", buttonColor);
+  difficultyEasyBtn = new Button(260, 750, 100, 40, "Easy", buttonColor);
+  difficultyNormalBtn = new Button(380, 750, 100, 40, "Normal", buttonColor);
+  difficultyHardBtn = new Button(500, 750, 100, 40, "Hard", buttonColor);
+  previousBtn = new Button(130, 750, 100, 40, "Previous", buttonColor);
 }
 
 void setObject() {
@@ -84,6 +84,21 @@ void setObject() {
   for (int i = 0; i < traffic; i++) {
     obj[i] = new ObjectCar();
   }
+}
+
+void setTraffic(int difficult) {
+  switch(difficult) {
+  case 1:
+    traffic = 5;
+    break;
+  case 2:
+    traffic = 10;
+    break;
+  case 3:
+    traffic = 15;
+    break;
+  }
+  setObject();
 }
 
 /************************************************/
@@ -225,11 +240,11 @@ public void mouseReleased() {
     if (previousBtn.isClicked(mouseX, mouseY)) {
       gameScreen = 0;
     } else if (difficultyEasyBtn.isClicked(mouseX, mouseY)) {
-      difficulty = 1;
+      setTraffic(1);
     } else if (difficultyNormalBtn.isClicked(mouseX, mouseY)) {
-      difficulty = 2;
+      setTraffic(2);
     } else if (difficultyHardBtn.isClicked(mouseX, mouseY)) {
-      difficulty = 3;
+      setTraffic(3);
     }
   }
   println("mousRealesed() Event is called (" + mouseX + ", " + mouseY + ")");
@@ -388,25 +403,25 @@ class Car {
     pushMatrix();
     translate(carX, carY);
     rotate(carRot);
-    
+
     //bumper
-    stroke(0,0,255);
-    fill(255,255,255);
-    ellipse(0,-28,40,15);
-    ellipse(0,28,42,15);
+    stroke(0, 0, 255);
+    fill(255, 255, 255);
+    ellipse(0, -28, 40, 15);
+    ellipse(0, 28, 42, 15);
     noStroke();
-    
+
     //tire
     fill(0);
     ellipse(-22, -13, 6, 12);
     ellipse(22, -13, 6, 12);
     ellipse(-22, 20, 6, 12);
     ellipse(22, 20, 6, 12);
-    
+
     // body
     fill(carColor);
     rect(0, 0, carW, carH);
-   
+
     // light
     stroke(100);
     strokeWeight(1);
@@ -414,46 +429,46 @@ class Car {
     rect(-13, -25, 14, 10);
     rect(13, -25, 14, 10);
     noStroke();
-    
+
     // up
-    fill(198,198,198);
+    fill(198, 198, 198);
     rect(0, 0, 30, 40);
-    
+
     // center : White
     stroke(0);
     strokeWeight(2);
     fill(255, 255, 255);
     rect(0, 0, 8, 8);
     noStroke();
-    
+
     // left : Red
     stroke(0);
     strokeWeight(2);
     fill(255, 0, 0);
     rect(-8, 0, 8, 8);
     noStroke();
-    
+
     // right : Blue
     stroke(0);
     strokeWeight(2);
     fill(0, 0, 255);
     rect(8, 0, 8, 8);
     noStroke();
-    
+
     //side line
-    stroke(0,0,255);
+    stroke(0, 0, 255);
     strokeWeight(3);
     line(-20, -20, -20, 20);
     line(20, 20, 20, -20);
     noStroke();
-    
+
     //back light
-    stroke(255,0,0);
+    stroke(255, 0, 0);
     strokeWeight(3);
-    line(-18,25,-8,25);
-    line(8,25,18,25);
+    line(-18, 25, -8, 25);
+    line(8, 25, 18, 25);
     noStroke();
-    
+
     popMatrix();
   }
 
@@ -490,12 +505,13 @@ class Car {
       carRot += .065;
     }
     if (bBrake == true) {
-      carSpeed -= .3;
+      carSpeed -= .4;
     } else {
-      carSpeed -= .25;
+      carSpeed -= .15;
     }
 
-    carSpeed = constrain(carSpeed, 0, 10); // speed 0 ~ 10
+    carSpeed = constrain(carSpeed, 0, 8); // speed 0 ~ 8
+    println(carSpeed);
   }
 
   void isCollide(float x, float y, float prevX, float prevY) {
@@ -503,14 +519,15 @@ class Car {
       if (o.lane == "reverse") {
         if (dist(x, y, o.carX, o.carY1) < 40) {
           carX = prevX * 0.97;
-          carY = prevY * 0.97;
+          carY = prevY + 10;
           carSpeed = 0;
           println("collide()");
         }
-      } if (o.lane == "forward") {
+      } 
+      if (o.lane == "forward") {
         if (dist(x, y, o.carX, o.carY2) < 40) {
           carX = prevX * 0.97;
-          carY = prevY * 0.97;
+          carY = prevY - 10;
           carSpeed = 0;
           println("collide()");
         }
