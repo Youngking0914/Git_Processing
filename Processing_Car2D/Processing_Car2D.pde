@@ -99,12 +99,6 @@ void draw() {
   }
 }
 
-
-
-
-
-
-
 void menuScreen() {
   /**** Background *****/
   tint(255, 230); // tint(gray, alpha);
@@ -240,7 +234,6 @@ public void keyPressed() {
         bBrake = true;
       }
     } else if (keyCode == 32) { // SpaceBar
-      println(scrollSpeed);
       scrollSpeed = initScrollSpeed / 2; // scrollSpeed -> 1/2
     } else if (keyCode == 80) { // P
       println("pause");
@@ -263,7 +256,6 @@ public void keyReleased() {
   // process in gameScreen
   if (gameScreen == 1) {
     if (keyCode == 32) {
-      println(scrollSpeed);
       scrollSpeed = initScrollSpeed; // scrollSpeed -> origin
     }
     if (key == CODED) {
@@ -405,7 +397,7 @@ class Car {
       carSpeed -= .25;
     }
 
-    carSpeed = constrain(carSpeed, 0, 10); // speed 0 ~ 8
+    carSpeed = constrain(carSpeed, 0, 10); // speed 0 ~ 10
     println(carX, carY);
   }
 }
