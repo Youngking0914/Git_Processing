@@ -1,24 +1,28 @@
 /************************************************/
 /*             Car 2D in Processing             */
 /************************************************/
-
-
-
-
-
+//description
+//
+// MVC Pattern
+// MODEL : Class(Button, Car)
+// VIEW : Screen(Menu, Game, Setting);
+// CONTROLLER : Event(Mouse, Keyboard)
+//
 /************************************************/
 /*                   Variables                  */
 /************************************************/
 // gameScreen : select Screen
 // difficulty : game`s difficulty (1 ~ 3)
 // scroll : scroll the background image infinity
-// scrollSpeed : background image scroll speed
+// initScrollSpeed : inital Scroll Speed for return to origin speed
+// ScrollSpeed : current background image scroll speed
+// bAccel, bBrake, .. : pressed the Button THEN True ELSE False
 
 int gameScreen = 0;
 int difficulty = 2;
 float scroll = 0;
-float scrollSpeed = 50.0;
-
+float initScrollSpeed = 50.0;
+float scrollSpeed = initScrollSpeed;
 boolean bAccel, bBrake, bLeft, bRight;
 
 PImage menuScreenImg;
@@ -37,6 +41,11 @@ Button previousBtn;
 
 Car myCar;
 
+
+/************************************************/
+/*                  Initialize                  */
+/************************************************/
+
 void setup() {
   size(720, 900);
   smooth();
@@ -46,29 +55,6 @@ void setup() {
   setButton(); // create Button
   setObject(); // create cars
 }
-
-void draw() {
-  background(255); // Screen Initialize
-
-  // menu Screen
-  if (gameScreen == 0) {
-    menuScreen();
-  }
-
-  // game Screen
-  else if (gameScreen == 1) {
-    gameScreen();
-  }
-
-  // setting Screen
-  else if (gameScreen == 2) {
-    settingScreen();
-  }
-}
-
-/************************************************/
-/*                  Initialize                  */
-/************************************************/
 
 void setImage() {
   menuScreenImg = loadImage("menuScreenImg.png");
@@ -91,8 +77,33 @@ void setObject() {
 }
 
 /************************************************/
-/*                   SCREEN                     */
+/*                SCREEN VIEW                   */
 /************************************************/
+
+void draw() {
+  background(255); // Screen Initialize
+
+  // menu Screen
+  if (gameScreen == 0) {
+    menuScreen();
+  }
+
+  // game Screen
+  else if (gameScreen == 1) {
+    gameScreen();
+  }
+
+  // setting Screen
+  else if (gameScreen == 2) {
+    settingScreen();
+  }
+}
+
+
+
+
+
+
 
 void menuScreen() {
   /**** Background *****/
@@ -132,7 +143,7 @@ void settingScreen() {
 
 
 /************************************************/
-/*                   EVENT                      */
+/*              EVENT CONTROLLER                */
 /************************************************/
 
 public void mousePressed() {
@@ -230,7 +241,7 @@ public void keyPressed() {
       }
     } else if (keyCode == 32) { // SpaceBar
       println(scrollSpeed);
-      scrollSpeed = 5;
+      scrollSpeed = initScrollSpeed / 2; // scrollSpeed -> 1/2
     } else if (keyCode == 80) { // P
       println("pause");
     }
@@ -253,7 +264,7 @@ public void keyReleased() {
   if (gameScreen == 1) {
     if (keyCode == 32) {
       println(scrollSpeed);
-      scrollSpeed = 15;
+      scrollSpeed = initScrollSpeed; // scrollSpeed -> origin
     }
     if (key == CODED) {
       if (keyCode == UP) {
@@ -277,7 +288,7 @@ public void keyReleased() {
 }
 
 /************************************************/
-/*                   CLASS                      */
+/*                CLASS MODEL                   */
 /************************************************/
 
 class Button {
@@ -394,7 +405,7 @@ class Car {
       carSpeed -= .25;
     }
 
-    carSpeed = constrain(carSpeed, 0, 8); // speed 0 ~ 8
+    carSpeed = constrain(carSpeed, 0, 10); // speed 0 ~ 8
     println(carX, carY);
   }
 }
