@@ -79,7 +79,7 @@ void setButton() {
 }
 
 void setObject() {
-  myCar = new Car(300, 700, 40, 60, color(137, 156, 183));
+  myCar = new Car(300, 700, 40, 60, color(238, 242, 198));
   obj = new ObjectCar[traffic];
   for (int i = 0; i < traffic; i++) {
     obj[i] = new ObjectCar();
@@ -523,6 +523,12 @@ class ObjectCar {
   }
   void changePos() {
     carX = spawnPosX[(int)random(0, 4)];
+    if (carX == 195 || carX == 300) {
+      lane = "reverse";
+    }
+    if (carX == 415 || carX == 530) {
+      lane = "forward";
+    }
   }
   void changeColor() { 
     carColor = color(random(0, 255), random(0, 255), random(0, 255));
