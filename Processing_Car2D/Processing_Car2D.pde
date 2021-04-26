@@ -30,7 +30,7 @@ float scroll = 0;
 float initScrollSpeed = 50.0;
 float scrollSpeed = initScrollSpeed;
 boolean bAccel, bBrake, bLeft, bRight;
-
+boolean pressedSpacebar;
 PImage menuScreenImg;
 PImage gameScreenImg;
 PImage settingScreenImg;
@@ -79,7 +79,7 @@ void setButton() {
 }
 
 void setObject() {
-  myCar = new Car(360, 240, 40, 60, color(137, 156, 183));
+  myCar = new Car(300, 700, 40, 60, color(137, 156, 183));
   obj = new ObjectCar[traffic];
   for(int i = 0; i < traffic; i++) {
     obj[i] = new ObjectCar();
@@ -125,10 +125,19 @@ void menuScreen() {
 
 void gameScreen() {
   /**** Background *****/
-  image(gameScreenImg, 0, scroll, width, height);
-  image(gameScreenImg, 0, scroll-height, width, height);
-  scroll += scrollSpeed;
-  if (scroll >= height) scroll = 0;
+  if(pressedSpacebar) {
+    tint(255, 230);
+    image(gameScreenImg, 0, scroll, width, height);
+    image(gameScreenImg, 0, scroll-height, width, height);
+    noTint();
+    scroll += scrollSpeed;
+    if (scroll >= height) scroll = 0;
+  } else {
+    image(gameScreenImg, 0, scroll, width, height);
+    image(gameScreenImg, 0, scroll-height, width, height);
+    scroll += scrollSpeed;
+    if (scroll >= height) scroll = 0;
+  }
   /*********************/
 
   myCar.move();
@@ -251,13 +260,14 @@ public void keyPressed() {
         bBrake = true;
       }
     } else if (keyCode == 32) { // SpaceBar
-      scrollSpeed = initScrollSpeed / 2; // scrollSpeed -> 1/2
+      scrollSpeed = initScrollSpeed / 3; // scrollSpeed -> 1/3
+      for(ObjectCar o : obj) {
+        o.carSpeed = o.initCarSpeed / 2; // objectSpeed -> 1/2
+      }
+      pressedSpacebar = true;
     } else if (keyCode == 80) { // P
       println("pause");
     }
-
-    //test code
-    //print(keyCode);
   }
 
   // process in settingScreen
@@ -274,6 +284,10 @@ public void keyReleased() {
   if (gameScreen == 1) {
     if (keyCode == 32) {
       scrollSpeed = initScrollSpeed; // scrollSpeed -> origin
+      for(ObjectCar o : obj) {
+        o.carSpeed = o.initCarSpeed;
+      }
+      pressedSpacebar = false;
     }
     if (key == CODED) {
       if (keyCode == UP) {
@@ -396,7 +410,7 @@ class Car {
     if (carY < 0 ) {
       carY = height;
     }  
-    if (  carY > height) {
+    if (carY > height) {
       carY = 0;
     }
 
@@ -422,6 +436,7 @@ class Car {
 
 class ObjectCar {
   float carSpeed = random(objMinSpeed, objMaxSpeed);
+  float initCarSpeed = carSpeed;
   color carColor = color(random(0, 255), random(0, 255), random(0, 255));
   color[] carLightColor = {color(255,255,255), color(241, 255, 49)};
   int[] spawnPosX = {195, 300, 415, 530};
@@ -448,7 +463,7 @@ class ObjectCar {
       break;
     }
   }
-
+  
   void load() {
     switch(lane) {
     case "reverseFirst":
@@ -510,5 +525,25 @@ class ObjectCar {
       break;
     }
     load();
+    
+    // infinity reverse lane
+    if (carY1 - (carH/2) > height) {
+      carY1 = 0 - (carH/2);
+      changePos();
+      changeColor();
+    }
+    // infinity forward lane
+    if (carY2 + (carH/2) < 0) {
+      carY2 = height + (carH/2);
+      changePos();
+      changeColor();
+    }    
   }
+  void changePos() {
+    carX = spawnPosX[(int)random(0, 4)];
+  }
+  void changeColor() { 
+    carColor = color(random(0, 255), random(0, 255), random(0, 255));
+  }
+  
 }
