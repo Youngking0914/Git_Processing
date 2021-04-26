@@ -363,9 +363,11 @@ class Car {
     carY -= cos(carRot) * carSpeed;
     load();
     
+    //left Wall Collision
     if (carX < 145 ) {
       carX = 145;
     }
+    //Right Wall Collision
     if (carX > 570) {
       carX = 570;
     }
