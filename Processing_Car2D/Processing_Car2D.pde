@@ -13,6 +13,8 @@
 /************************************************/
 // gameScreen : select Screen
 // difficulty : game`s difficulty (1 ~ 3)
+// objMinSpeed : It changes with difficulty
+// objMaxSpeed = It changes with difficulty
 // scroll : scroll the background image infinity
 // initScrollSpeed : inital Scroll Speed for return to origin speed
 // ScrollSpeed : current background image scroll speed
@@ -20,6 +22,8 @@
 
 int gameScreen = 0;
 int difficulty = 2;
+int objMinSpeed = 4;
+int objMaxSpeed = 8;
 float scroll = 0;
 float initScrollSpeed = 50.0;
 float scrollSpeed = initScrollSpeed;
@@ -40,7 +44,7 @@ Button difficultyHardBtn;
 Button previousBtn;
 
 Car myCar;
-
+ObjectCar obj;
 
 /************************************************/
 /*                  Initialize                  */
@@ -73,7 +77,8 @@ void setButton() {
 }
 
 void setObject() {
-   myCar = new Car(360, 240, 40, 60, color(137, 156, 183));
+  myCar = new Car(360, 240, 40, 60, color(137, 156, 183));
+  obj = new ObjectCar();
 }
 
 /************************************************/
@@ -120,8 +125,9 @@ void gameScreen() {
   scroll += scrollSpeed;
   if (scroll >= height) scroll = 0;
   /*********************/
-  
+
   myCar.move();
+  obj.move();
 }
 
 void settingScreen() {
@@ -324,7 +330,7 @@ class Button {
     } else 
     return false;
   }
-  
+
   void changeColorPressed() {
     float r = red(this.btnCurColor);
     float g = green(this.btnCurColor);
@@ -344,7 +350,7 @@ class Car {
   float carSpeed = 0.0;
   float carRot = 0.0;
   color carColor;
-  
+
   float inertia; // gwanseong
 
   public Car(int startX, int startY, int inputW, int inputH, color inputColor) {
@@ -361,7 +367,7 @@ class Car {
     rotate(carRot);
     fill(carColor);
     rect(0, 0, carW, carH);
-    fill(241,255,49);
+    fill(241, 255, 49);
     rect(-13, -25, 14, 10);
     rect(13, -25, 14, 10);
     popMatrix();
@@ -371,7 +377,7 @@ class Car {
     carX += sin(carRot) * carSpeed;
     carY -= cos(carRot) * carSpeed;
     load();
-    
+
     //left Wall Collision
     if (carX < 145 ) {
       carX = 145;
@@ -386,7 +392,7 @@ class Car {
     if (  carY > height) {
       carY = 0;
     }
-    
+
     if (bAccel == true) {
       carSpeed = inertia += .1;
     }
@@ -398,16 +404,103 @@ class Car {
     }
     if (bBrake == true) {
       carSpeed -= .3;
-    }
-    else {
+    } else {
       carSpeed -= .25;
     }
 
     carSpeed = constrain(carSpeed, 0, 10); // speed 0 ~ 10
-    println(carX, carY);
+    //println(carX, carY);
   }
 }
 
-class CarObject {
-  
+class ObjectCar {
+  float carSpeed = random(objMinSpeed, objMaxSpeed);
+  color carColor = color(random(0, 255), random(0, 255), random(0, 255));
+  int[] spawnPosX = {195, 300, 415, 530};
+  int carX = spawnPosX[(int)random(0, 4)];
+  int carY1 = 0;
+  int carY2 = height;
+  int carW = 40;
+  int carH = 60;
+  String lane;
+
+  ObjectCar() {
+    switch(carX) {
+    case 195:
+      lane = "reverseFirst";
+      break;
+    case 300:
+      lane = "reverseSecond";
+      break;
+    case 415:
+      lane = "first";
+      break;
+    case 530:
+      lane = "second";
+      break;
+    }
+  }
+
+  void load() {
+    switch(lane) {
+    case "reverseFirst":
+      pushMatrix();
+      translate(carX, carY1);
+      fill(carColor);
+      rect(0, 0, carW, carH);
+      fill(241, 255, 49);
+      rect(-13, 55, 14, 10);
+      rect(13, 55, 14, 10);
+      popMatrix();
+      break;
+    case "reverseSecond":
+      pushMatrix();
+      translate(carX, carY1);
+      fill(carColor);
+      rect(0, 0, carW, carH);
+      fill(241, 255, 49);
+      rect(-13, 55, 14, 10);
+      rect(13, 55, 14, 10);
+      popMatrix();
+      break;
+    case "first":
+      pushMatrix();
+      translate(carX, carY2);
+      fill(carColor);
+      rect(0, 0, carW, carH);
+      fill(241, 255, 49);
+      rect(-13, -25, 14, 10);
+      rect(13, -25, 14, 10);
+      popMatrix();
+      break;
+    case "second":
+      pushMatrix();
+      translate(carX, carY2);
+      fill(carColor);
+      rect(0, 0, carW, carH);
+      fill(241, 255, 49);
+      rect(-13, -25, 14, 10);
+      rect(13, -25, 14, 10);
+      popMatrix();
+      break;
+    }
+  }
+
+  void move() {
+    switch(lane) {
+    case "reverseFirst":
+      carY1 += carSpeed;
+      break;
+    case "reverseSecond":
+      carY1 += carSpeed;
+      break;
+    case "first":
+      carY2 -= carSpeed;
+      break;
+    case "second":
+      carY2 -= carSpeed;
+      break;
+    }
+    load();
+  }
 }
