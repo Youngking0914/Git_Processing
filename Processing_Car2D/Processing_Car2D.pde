@@ -79,7 +79,7 @@ void setButton() {
 }
 
 void setObject() {
-  myCar = new Car(300, 700, 40, 60, color(238, 242, 198));
+  myCar = new Car(300, 700, 40, 60, color(240, 240, 240));
   obj = new ObjectCar[traffic];
   for (int i = 0; i < traffic; i++) {
     obj[i] = new ObjectCar();
@@ -366,6 +366,8 @@ class Button {
 class Car {
   float carX;
   float carY;
+  float prevX;
+  float prevY;
   int carW;
   int carH;
   float carSpeed = 0.0;
@@ -386,18 +388,81 @@ class Car {
     pushMatrix();
     translate(carX, carY);
     rotate(carRot);
+    
+    //bumper
+    stroke(0,0,255);
+    fill(255,255,255);
+    ellipse(0,-28,40,15);
+    ellipse(0,28,42,15);
+    noStroke();
+    
+    //tire
+    fill(0);
+    ellipse(-22, -13, 6, 12);
+    ellipse(22, -13, 6, 12);
+    ellipse(-22, 20, 6, 12);
+    ellipse(22, 20, 6, 12);
+    
+    // body
     fill(carColor);
     rect(0, 0, carW, carH);
+   
+    // light
+    stroke(100);
+    strokeWeight(1);
     fill(241, 255, 49);
     rect(-13, -25, 14, 10);
     rect(13, -25, 14, 10);
+    noStroke();
+    
+    // up
+    fill(198,198,198);
+    rect(0, 0, 30, 40);
+    
+    // center : White
+    stroke(0);
+    strokeWeight(2);
+    fill(255, 255, 255);
+    rect(0, 0, 8, 8);
+    noStroke();
+    
+    // left : Red
+    stroke(0);
+    strokeWeight(2);
+    fill(255, 0, 0);
+    rect(-8, 0, 8, 8);
+    noStroke();
+    
+    // right : Blue
+    stroke(0);
+    strokeWeight(2);
+    fill(0, 0, 255);
+    rect(8, 0, 8, 8);
+    noStroke();
+    
+    //side line
+    stroke(0,0,255);
+    strokeWeight(3);
+    line(-20, -20, -20, 20);
+    line(20, 20, 20, -20);
+    noStroke();
+    
+    //back light
+    stroke(255,0,0);
+    strokeWeight(3);
+    line(-18,25,-8,25);
+    line(8,25,18,25);
+    noStroke();
+    
     popMatrix();
   }
 
   void move() {
+    prevX = carX;
+    prevY = carY;
     carX += sin(carRot) * carSpeed;
     carY -= cos(carRot) * carSpeed;
-    isCollide(carX, carY);
+    isCollide(carX, carY, prevX, prevY);
     load();
 
     //left Wall Collision
@@ -431,23 +496,24 @@ class Car {
     }
 
     carSpeed = constrain(carSpeed, 0, 10); // speed 0 ~ 10
-    //println(carX, carY);
   }
 
-  void isCollide(float inputX, float inputY) {
-    float x = inputX;
-    float y = inputY - (carH / 2);
+  void isCollide(float x, float y, float prevX, float prevY) {
     for (ObjectCar o : obj) {
-      //if (inputX > btnX - (btnW / 2) && inputX < btnX + (btnW / 2) 
-      // && inputY > btnY - (btnH / 2) && inputY < btnY + (btnH / 2))
       if (o.lane == "reverse") {
-        if (x > o.carX - (o.carW / 2) &&  x < o.carX + (o.carW / 2)
-          && y > o.carY1 - (carH / 2) && y < o.carY1 + (o.carH / 2)) {
-          carY += 10;
+        if (dist(x, y, o.carX, o.carY1) < 40) {
+          carX = prevX * 0.97;
+          carY = prevY * 0.97;
           carSpeed = 0;
+          println("collide()");
         }
-      }
-      if (o.lane == "forward") {
+      } if (o.lane == "forward") {
+        if (dist(x, y, o.carX, o.carY2) < 40) {
+          carX = prevX * 0.97;
+          carY = prevY * 0.97;
+          carSpeed = 0;
+          println("collide()");
+        }
       }
     }
   }
@@ -467,12 +533,7 @@ class ObjectCar {
   String lane;
 
   ObjectCar() {
-    if (carX == 195 || carX == 300) {
-      lane = "reverse";
-    }
-    if (carX == 415 || carX == 530) {
-      lane = "forward";
-    }
+    changeLane();
   }
 
   void load() {
@@ -512,25 +573,29 @@ class ObjectCar {
     if (carY1 - (carH/2) > height) {
       carY1 = 0 - (carH/2);
       changePos();
+      changeLane();
       changeColor();
     }
     // infinity forward lane
     if (carY2 + (carH/2) < 0) {
       carY2 = height + (carH/2);
       changePos();
+      changeLane();
       changeColor();
     }
   }
   void changePos() {
     carX = spawnPosX[(int)random(0, 4)];
+  }
+  void changeColor() { 
+    carColor = color(random(0, 255), random(0, 255), random(0, 255));
+  }
+  void changeLane() {
     if (carX == 195 || carX == 300) {
       lane = "reverse";
     }
     if (carX == 415 || carX == 530) {
       lane = "forward";
     }
-  }
-  void changeColor() { 
-    carColor = color(random(0, 255), random(0, 255), random(0, 255));
   }
 }
