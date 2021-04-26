@@ -4,7 +4,7 @@
 //description
 //
 // MVC Pattern
-// MODEL : Class(Button, Car)
+// MODEL : Class(Button, Car), Object
 // VIEW : Screen(Menu, Game, Setting);
 // CONTROLLER : Event(Mouse, Keyboard)
 //
@@ -73,7 +73,7 @@ void setButton() {
 }
 
 void setObject() {
-   myCar = new Car(360, 240, 40, 60, color(255, 100, 100));
+   myCar = new Car(360, 240, 40, 60, color(137, 156, 183));
 }
 
 /************************************************/
@@ -104,21 +104,23 @@ void menuScreen() {
   tint(255, 230); // tint(gray, alpha);
   image(menuScreenImg, 0, 0, width, height);
   noTint();
+  /*********************/
 
   /****** Button ******/
   startBtn.create();
   settingBtn.create();
   exitBtn.create();
+  /*********************/
 }
 
 void gameScreen() {
   /**** Background *****/
   image(gameScreenImg, 0, scroll, width, height);
   image(gameScreenImg, 0, scroll-height, width, height);
-
   scroll += scrollSpeed;
   if (scroll >= height) scroll = 0;
-
+  /*********************/
+  
   myCar.move();
 }
 
@@ -127,12 +129,14 @@ void settingScreen() {
   tint(255, 200);
   image(settingScreenImg, 0, 0, width, height);
   noTint();
+  /*********************/
 
   /****** Button ******/
   difficultyEasyBtn.create();
   difficultyNormalBtn.create();
   difficultyHardBtn.create();
   previousBtn.create();
+  /*********************/
 }
 
 
@@ -340,7 +344,6 @@ class Car {
   float carSpeed = 0.0;
   float carRot = 0.0;
   color carColor;
-  PImage carImg;
   
   float inertia; // gwanseong
 
@@ -355,9 +358,12 @@ class Car {
   void load() {
     pushMatrix();
     translate(carX, carY);
-    fill(carColor);
     rotate(carRot);
+    fill(carColor);
     rect(0, 0, carW, carH);
+    fill(241,255,49);
+    rect(-13, -25, 14, 10);
+    rect(13, -25, 14, 10);
     popMatrix();
   }
 
@@ -400,4 +406,8 @@ class Car {
     carSpeed = constrain(carSpeed, 0, 10); // speed 0 ~ 10
     println(carX, carY);
   }
+}
+
+class CarObject {
+  
 }
