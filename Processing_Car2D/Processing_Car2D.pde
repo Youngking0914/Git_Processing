@@ -14,7 +14,8 @@
 // gameScreen : select Screen
 // difficulty : game`s difficulty (1 ~ 3)
 // objMinSpeed : It changes with difficulty
-// objMaxSpeed = It changes with difficulty
+// objMaxSpeed : It changes with difficulty
+// traffic : amount of object
 // scroll : scroll the background image infinity
 // initScrollSpeed : inital Scroll Speed for return to origin speed
 // ScrollSpeed : current background image scroll speed
@@ -24,6 +25,7 @@ int gameScreen = 0;
 int difficulty = 2;
 int objMinSpeed = 4;
 int objMaxSpeed = 8;
+int traffic = 10;
 float scroll = 0;
 float initScrollSpeed = 50.0;
 float scrollSpeed = initScrollSpeed;
@@ -44,7 +46,7 @@ Button difficultyHardBtn;
 Button previousBtn;
 
 Car myCar;
-ObjectCar obj;
+ObjectCar[] obj;
 
 /************************************************/
 /*                  Initialize                  */
@@ -78,7 +80,10 @@ void setButton() {
 
 void setObject() {
   myCar = new Car(360, 240, 40, 60, color(137, 156, 183));
-  obj = new ObjectCar();
+  obj = new ObjectCar[traffic];
+  for(int i = 0; i < traffic; i++) {
+    obj[i] = new ObjectCar();
+  }
 }
 
 /************************************************/
@@ -127,7 +132,9 @@ void gameScreen() {
   /*********************/
 
   myCar.move();
-  obj.move();
+  for(ObjectCar o : obj) {
+    o.move();
+  }
 }
 
 void settingScreen() {
@@ -416,6 +423,7 @@ class Car {
 class ObjectCar {
   float carSpeed = random(objMinSpeed, objMaxSpeed);
   color carColor = color(random(0, 255), random(0, 255), random(0, 255));
+  color[] carLightColor = {color(255,255,255), color(241, 255, 49)};
   int[] spawnPosX = {195, 300, 415, 530};
   int carX = spawnPosX[(int)random(0, 4)];
   int carY1 = 0;
@@ -449,8 +457,8 @@ class ObjectCar {
       fill(carColor);
       rect(0, 0, carW, carH);
       fill(241, 255, 49);
-      rect(-13, 55, 14, 10);
-      rect(13, 55, 14, 10);
+      rect(-13, 25, 14, 10);
+      rect(13, 25, 14, 10);
       popMatrix();
       break;
     case "reverseSecond":
@@ -459,8 +467,8 @@ class ObjectCar {
       fill(carColor);
       rect(0, 0, carW, carH);
       fill(241, 255, 49);
-      rect(-13, 55, 14, 10);
-      rect(13, 55, 14, 10);
+      rect(-13, 25, 14, 10);
+      rect(13, 25, 14, 10);
       popMatrix();
       break;
     case "first":
