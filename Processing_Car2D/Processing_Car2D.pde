@@ -81,7 +81,7 @@ void setButton() {
 void setObject() {
   myCar = new Car(300, 700, 40, 60, color(137, 156, 183));
   obj = new ObjectCar[traffic];
-  for(int i = 0; i < traffic; i++) {
+  for (int i = 0; i < traffic; i++) {
     obj[i] = new ObjectCar();
   }
 }
@@ -125,7 +125,7 @@ void menuScreen() {
 
 void gameScreen() {
   /**** Background *****/
-  if(pressedSpacebar) {
+  if (pressedSpacebar) {
     tint(255, 230);
     image(gameScreenImg, 0, scroll, width, height);
     image(gameScreenImg, 0, scroll-height, width, height);
@@ -141,7 +141,7 @@ void gameScreen() {
   /*********************/
 
   myCar.move();
-  for(ObjectCar o : obj) {
+  for (ObjectCar o : obj) {
     o.move();
   }
 }
@@ -261,7 +261,7 @@ public void keyPressed() {
       }
     } else if (keyCode == 32) { // SpaceBar
       scrollSpeed = initScrollSpeed / 3; // scrollSpeed -> 1/3
-      for(ObjectCar o : obj) {
+      for (ObjectCar o : obj) {
         o.carSpeed = o.initCarSpeed / 2; // objectSpeed -> 1/2
       }
       pressedSpacebar = true;
@@ -284,7 +284,7 @@ public void keyReleased() {
   if (gameScreen == 1) {
     if (keyCode == 32) {
       scrollSpeed = initScrollSpeed; // scrollSpeed -> origin
-      for(ObjectCar o : obj) {
+      for (ObjectCar o : obj) {
         o.carSpeed = o.initCarSpeed;
       }
       pressedSpacebar = false;
@@ -364,8 +364,8 @@ class Button {
 }
 
 class Car {
-  int carX;
-  int carY;
+  float carX;
+  float carY;
   int carW;
   int carH;
   float carSpeed = 0.0;
@@ -397,6 +397,7 @@ class Car {
   void move() {
     carX += sin(carRot) * carSpeed;
     carY -= cos(carRot) * carSpeed;
+    isCollide(carX, carY);
     load();
 
     //left Wall Collision
@@ -432,118 +433,98 @@ class Car {
     carSpeed = constrain(carSpeed, 0, 10); // speed 0 ~ 10
     //println(carX, carY);
   }
+
+  void isCollide(float inputX, float inputY) {
+    float x = inputX / 2;
+    float y = inputY / 2;
+    for (ObjectCar o : obj) {
+      //if (x > o.carX - (o.carW / 2) && x < o.carX + (o.carW / 2) 
+      //  && y > o.carY1 - (o.carH / 2) && y < o.carY1 + (o.carH / 2)) {
+      //    carX--;
+      //    carSpeed = 0;
+      //}
+      if(o.lane = "reverseFirst"
+      if (x > o.carY1 + (o.carH / 2)) {
+        carX--;
+        carSpeed = 0;
+      }
+    }
+  }
 }
 
-class ObjectCar {
-  float carSpeed = random(objMinSpeed, objMaxSpeed);
-  float initCarSpeed = carSpeed;
-  color carColor = color(random(0, 255), random(0, 255), random(0, 255));
-  color[] carLightColor = {color(255,255,255), color(241, 255, 49)};
-  int[] spawnPosX = {195, 300, 415, 530};
-  int carX = spawnPosX[(int)random(0, 4)];
-  int carY1 = 0;
-  int carY2 = height;
-  int carW = 40;
-  int carH = 60;
-  String lane;
+  class ObjectCar {
+    float carSpeed = random(objMinSpeed, objMaxSpeed);
+    float initCarSpeed = carSpeed;
+    color carColor = color(random(0, 255), random(0, 255), random(0, 255));
+    color[] carLightColor = {color(255, 255, 255), color(241, 255, 49)};
+    int[] spawnPosX = {195, 300, 415, 530};
+    int carX = spawnPosX[(int)random(0, 4)];
+    float carY1 = 0;
+    float carY2 = height;
+    int carW = 40;
+    int carH = 60;
+    String lane;
 
-  ObjectCar() {
-    switch(carX) {
-    case 195:
-      lane = "reverseFirst";
-      break;
-    case 300:
-      lane = "reverseSecond";
-      break;
-    case 415:
-      lane = "first";
-      break;
-    case 530:
-      lane = "second";
-      break;
+    ObjectCar() {
+      if (carX == 195 || carX == 300) {
+        lane = "reverse";
+      }
+      if (carX == 415 || carX == 530) {
+        lane = "forward";
+      }
     }
-  }
-  
-  void load() {
-    switch(lane) {
-    case "reverseFirst":
-      pushMatrix();
-      translate(carX, carY1);
-      fill(carColor);
-      rect(0, 0, carW, carH);
-      fill(241, 255, 49);
-      rect(-13, 25, 14, 10);
-      rect(13, 25, 14, 10);
-      popMatrix();
-      break;
-    case "reverseSecond":
-      pushMatrix();
-      translate(carX, carY1);
-      fill(carColor);
-      rect(0, 0, carW, carH);
-      fill(241, 255, 49);
-      rect(-13, 25, 14, 10);
-      rect(13, 25, 14, 10);
-      popMatrix();
-      break;
-    case "first":
-      pushMatrix();
-      translate(carX, carY2);
-      fill(carColor);
-      rect(0, 0, carW, carH);
-      fill(241, 255, 49);
-      rect(-13, -25, 14, 10);
-      rect(13, -25, 14, 10);
-      popMatrix();
-      break;
-    case "second":
-      pushMatrix();
-      translate(carX, carY2);
-      fill(carColor);
-      rect(0, 0, carW, carH);
-      fill(241, 255, 49);
-      rect(-13, -25, 14, 10);
-      rect(13, -25, 14, 10);
-      popMatrix();
-      break;
-    }
-  }
 
-  void move() {
-    switch(lane) {
-    case "reverseFirst":
-      carY1 += carSpeed;
-      break;
-    case "reverseSecond":
-      carY1 += carSpeed;
-      break;
-    case "first":
-      carY2 -= carSpeed;
-      break;
-    case "second":
-      carY2 -= carSpeed;
-      break;
+    void load() {
+      if (lane == "reverse") {
+        pushMatrix();
+        translate(carX, carY1);
+        fill(carColor);
+        rect(0, 0, carW, carH);
+        fill(241, 255, 49);
+        rect(-13, 25, 14, 10);
+        rect(13, 25, 14, 10);
+        popMatrix();
+      }
+      if (lane == "forward") {
+         pushMatrix();
+        translate(carX, carY2);
+        fill(carColor);
+        rect(0, 0, carW, carH);
+        fill(241, 255, 49);
+        rect(-13, -25, 14, 10);
+        rect(13, -25, 14, 10);
+        popMatrix();
+      }
     }
-    load();
-    
-    // infinity reverse lane
-    if (carY1 - (carH/2) > height) {
-      carY1 = 0 - (carH/2);
-      changePos();
-      changeColor();
+
+    void move() {
+      switch(lane) {
+      case "reverse":
+        carY1 += carSpeed;
+        break;
+      case "forward":
+        carY2 -= carSpeed;
+        break;
+      }
+      load();
+
+      // infinity reverse lane
+      if (carY1 - (carH/2) > height) {
+        carY1 = 0 - (carH/2);
+        changePos();
+        changeColor();
+      }
+      // infinity forward lane
+      if (carY2 + (carH/2) < 0) {
+        carY2 = height + (carH/2);
+        changePos();
+        changeColor();
+      }
     }
-    // infinity forward lane
-    if (carY2 + (carH/2) < 0) {
-      carY2 = height + (carH/2);
-      changePos();
-      changeColor();
-    }    
+    void changePos() {
+      carX = spawnPosX[(int)random(0, 4)];
+    }
+    void changeColor() { 
+      carColor = color(random(0, 255), random(0, 255), random(0, 255));
+    }
   }
-  void changePos() {
-    carX = spawnPosX[(int)random(0, 4)];
-  }
-  void changeColor() { 
-    carColor = color(random(0, 255), random(0, 255), random(0, 255));
-  }
-  
-}
