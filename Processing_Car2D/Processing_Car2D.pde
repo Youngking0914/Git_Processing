@@ -1,11 +1,13 @@
 /************************************************/
 /*             Car 2D in Processing             */
 /************************************************/
-//description
+// description
+//
+// made by YoungKyu
 //
 // MVC Pattern
 // MODEL : Class(Button, Car), Object
-// VIEW : Scene(Menu, Game, Setting);
+// VIEW : Scene(Menu, Game, Setting, GameOver)
 // CONTROLLER : Event(Mouse, Keyboard)
 //
 /************************************************/
@@ -67,7 +69,7 @@ void setup() {
   setImage(); // load images
   setButton(); // create Button
   setObject(); // create cars
-  setTraffic(difficulty); // 
+  setTraffic(difficulty); // set Objects Traffic
 }
 
 void setImage() {
@@ -108,6 +110,54 @@ void setTraffic(int difficult) {
     break;
   }
   setObject();
+}
+
+/************************************************/
+/*                SCENE VIEW                   */
+/************************************************/
+
+void draw() {
+  background(255); // Scene Initialize
+
+  // menu Scene
+  if (scene == 0) {
+    menuScene();
+  }
+
+  // game Scene
+  else if (scene == 1) {
+    gameScene();
+  }
+
+  // setting Scene
+  else if (scene == 2) {
+    settingScene();
+  }
+
+  // gameOver Scene
+  else if (scene == 3) {
+    gameOverScene();
+  }
+}
+
+void menuScene() {
+  setSceneUI();
+}
+
+void gameScene() {
+  setSceneUI();
+  myCar.move();
+  for (ObjectCar o : obj) {
+    o.move();
+  }
+}
+
+void settingScene() {
+  setSceneUI();
+}
+
+void gameOverScene() {
+  setSceneUI();
 }
 
 void setSceneUI() {
@@ -259,55 +309,6 @@ void isGameOver(int life) {
 }
 
 /************************************************/
-/*                SCENE VIEW                   */
-/************************************************/
-
-void draw() {
-  background(255); // Scene Initialize
-
-  // menu Scene
-  if (scene == 0) {
-    menuScene();
-  }
-
-  // game Scene
-  else if (scene == 1) {
-    gameScene();
-  }
-
-  // setting Scene
-  else if (scene == 2) {
-    settingScene();
-  }
-
-  // gameOver Scene
-  else if (scene == 3) {
-    gameOverScene();
-  }
-}
-
-void menuScene() {
-  setSceneUI();
-}
-
-void gameScene() {
-  setSceneUI();
-  myCar.move();
-  for (ObjectCar o : obj) {
-    o.move();
-  }
-}
-
-void settingScene() {
-  setSceneUI();
-}
-
-void gameOverScene() {
-  setSceneUI();
-}
-
-
-/************************************************/
 /*              EVENT CONTROLLER                */
 /************************************************/
 
@@ -415,10 +416,6 @@ public void keyPressed() {
         bBrake = true;
       }
     } else if (keyCode == 32) { // SpaceBar
-      //scrollSpeed = initScrollSpeed / 3; // scrollSpeed -> 1/3
-      //for (ObjectCar o : obj) {
-      //  o.carSpeed = o.initCarSpeed / 2; // objectSpeed -> 1/2
-      //}
       pressedSpacebar = true;
     } else if (keyCode == 80) { // P
       println("pause");
@@ -438,10 +435,6 @@ public void keyReleased() {
   // process in gameScreen
   if (scene == 1) {
     if (keyCode == 32) {
-      //scrollSpeed = initScrollSpeed; // scrollSpeed -> origin
-      //for (ObjectCar o : obj) {
-      //  o.carSpeed = o.initCarSpeed;
-      //}
       pressedSpacebar = false;
     }
     if (key == CODED) {
