@@ -29,7 +29,7 @@ int difficulty = 2;
 int objMinSpeed = 4;
 int objMaxSpeed = 8;
 int traffic = 10;
-int life = 10;
+int life = 100;
 int score = 0;
 int abillity = 100;
 float scroll = 0;
@@ -124,6 +124,16 @@ void setSceneUI() {
     settingBtn.create();
     exitBtn.create();
     /*********************/
+    
+    /****** TEXT *********/
+    textSize(80);
+    textAlign(CENTER);
+    fill(90,90,90);
+    text("Car 2D !", 365, 205);
+    fill(255,0,0);
+    text("Car 2D !", 360, 200);
+     
+    /*********************/
     break;
 
   case 1: // GameSceneUI
@@ -177,18 +187,18 @@ void setSceneUI() {
 
     fill(255, 255, 0);
     textSize(25);
-    text("LIFE", 655, 50);
-    text(life, 655, 80);
+    text("LIFE", 655, 60);
+    text(life, 655, 90);
+    textSize(18);
+    text("SCORE", 655, 120);
     textSize(20);
-    text("SCORE", 655, 110);
-    textSize(20);
-    text(score, 655, 140);
+    text(score, 655, 150);
 
     fill(0, 0, 0, 100);
     rect(655, 270, 70, 170);
     fill(90, 234, 190);
     textSize(15);
-    text("ABILLITY", 655, 195);
+    text("ABILLITY", 655, 205);
     if (abillity > 0) {
       rect(655, 330, 60, 20);
     }
