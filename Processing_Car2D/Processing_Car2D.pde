@@ -17,6 +17,8 @@
 // objMaxSpeed : It changes with difficulty
 // traffic : amount of object
 // life : if detected collision then life -1
+// score : how long driving
+// abillity : be slow
 // scroll : scroll the background image infinity
 // initScrollSpeed : inital Scroll Speed for return to origin speed
 // ScrollSpeed : current background image scroll speed
@@ -27,7 +29,9 @@ int difficulty = 2;
 int objMinSpeed = 4;
 int objMaxSpeed = 8;
 int traffic = 10;
-int life = 5;
+int life = 10;
+int score = 0;
+int abillity = 100;
 float scroll = 0;
 float initScrollSpeed = 50.0;
 float scrollSpeed = initScrollSpeed;
@@ -36,6 +40,7 @@ boolean pressedSpacebar;
 PImage menuSceneImg;
 PImage gameSceneImg;
 PImage settingSceneImg;
+PImage gameOverSceneImg;
 
 color buttonColor = color(160, 160, 160, 200);
 
@@ -62,12 +67,14 @@ void setup() {
   setImage(); // load images
   setButton(); // create Button
   setObject(); // create cars
+  setTraffic(difficulty); // 
 }
 
 void setImage() {
   menuSceneImg = loadImage("menuSceneImg.png");
   gameSceneImg = loadImage("gameSceneImg.png");
   settingSceneImg = loadImage("settingSceneImg.jpg");
+  gameOverSceneImg = loadImage("gameOverSceneImg.jpg");
 }
 
 void setButton() {
@@ -103,60 +110,178 @@ void setTraffic(int difficult) {
   setObject();
 }
 
+void setSceneUI() {
+  switch(scene) {
+  case 0: // MenuSceneUI
+    /**** Background *****/
+    tint(255, 230); // tint(gray, alpha);
+    image(menuSceneImg, 0, 0, width, height);
+    noTint();
+    /*********************/
+
+    /****** Button ******/
+    startBtn.create();
+    settingBtn.create();
+    exitBtn.create();
+    /*********************/
+    break;
+
+  case 1: // GameSceneUI
+    /**** Background *****/
+    if (pressedSpacebar) {
+      tint(100);
+      image(gameSceneImg, 0, scroll, width, height);
+      image(gameSceneImg, 0, scroll-height, width, height);
+      noTint();
+      tint(255, 250);
+      fill(255, 255, 255, 125);
+      ellipseMode(CENTER);
+      ellipse(myCar.carX, myCar.carY, 100, 125);
+      noTint();
+      scroll += scrollSpeed;
+      if (scroll >= height) scroll = 0;
+    } else {
+      image(gameSceneImg, 0, scroll, width, height);
+      image(gameSceneImg, 0, scroll-height, width, height);
+      scroll += scrollSpeed;
+      if (scroll >= height) scroll = 0;
+    }
+    /*********************/
+
+    score++;
+    if (pressedSpacebar == true) {
+      if (abillity > 0) {
+        abillity--; 
+        scrollSpeed = initScrollSpeed / 3; // scrollSpeed -> 1/3
+        for (ObjectCar o : obj) {
+          o.carSpeed = o.initCarSpeed / 2; // objectSpeed -> 1/2
+        }
+      } 
+      else {
+        pressedSpacebar = false;
+      }
+    } 
+    else {  
+      abillity++;
+      scrollSpeed = initScrollSpeed; // scrollSpeed -> origin
+      for (ObjectCar o : obj) {
+        o.carSpeed = o.initCarSpeed;
+      }
+    }
+    
+    abillity = constrain(abillity, 0, 100);
+
+    /****** TEXT *********/
+    fill(0, 0, 0, 100);
+    rect(655, 100, 70, 140);
+
+    fill(255, 255, 0);
+    textSize(25);
+    text("LIFE", 655, 50);
+    text(life, 655, 80);
+    textSize(20);
+    text("SCORE", 655, 110);
+    textSize(20);
+    text(score, 655, 140);
+
+    fill(0, 0, 0, 100);
+    rect(655, 270, 70, 170);
+    fill(90, 234, 190);
+    textSize(15);
+    text("ABILLITY", 655, 195);
+    if (abillity > 0) {
+      rect(655, 330, 60, 20);
+    }
+    if (abillity >= 30) {
+      rect(655, 305, 60, 20);
+    }
+    if (abillity >= 60) {
+      rect(655, 280, 60, 20);
+    }
+    if (abillity >= 90) {
+      rect(655, 255, 60, 20);
+    }
+    if (abillity >= 100) {
+      rect(655, 230, 60, 20);
+    }
+    break;
+
+    /*********************/
+
+  case 2: //SettingSceneUI
+    /**** Background *****/
+    tint(255, 200);
+    image(settingSceneImg, 0, 0, width, height);
+    noTint();
+    /*********************/
+
+    /****** Button *******/
+    difficultyEasyBtn.create();
+    difficultyNormalBtn.create();
+    difficultyHardBtn.create();
+    previousBtn.create();
+    /**********************/
+    break;
+  case 3:
+    /**** Background *****/
+    tint(255, 100); // tint(gray, alpha);
+    image(gameOverSceneImg, 0, 0, width, height);
+    noTint();
+    fill(255, 0, 0);
+    textSize(60);
+    text("Game Over", 360, 180);
+    textSize(40);
+    text("Your Score", 360, 250);
+    textSize(80);
+    fill(240, 197, 80); 
+    text(score, 360, 350);
+    fill(255, 0, 0);
+    textSize(50);
+    text("Click to Continue !", 360, 700);
+    /*********************/
+    break;
+  }
+}
+
+void isGameOver(int life) {
+  if (life <= 0) 
+    scene = 3;
+}
+
 /************************************************/
 /*                SCENE VIEW                   */
 /************************************************/
 
 void draw() {
-  background(255); // Screen Initialize
+  background(255); // Scene Initialize
 
-  // menu Screen
+  // menu Scene
   if (scene == 0) {
     menuScene();
   }
 
-  // game Screen
+  // game Scene
   else if (scene == 1) {
     gameScene();
   }
 
-  // setting Screen
+  // setting Scene
   else if (scene == 2) {
     settingScene();
+  }
+
+  // gameOver Scene
+  else if (scene == 3) {
+    gameOverScene();
   }
 }
 
 void menuScene() {
-  /**** Background *****/
-  tint(255, 230); // tint(gray, alpha);
-  image(menuSceneImg, 0, 0, width, height);
-  noTint();
-  /*********************/
-
-  /****** Button ******/
-  startBtn.create();
-  settingBtn.create();
-  exitBtn.create();
-  /*********************/
+  setSceneUI();
 }
 
 void gameScene() {
-  /**** Background *****/
-  if (pressedSpacebar) {
-    tint(255, 230);
-    image(gameSceneImg, 0, scroll, width, height);
-    image(gameSceneImg, 0, scroll-height, width, height);
-    noTint();
-    scroll += scrollSpeed;
-    if (scroll >= height) scroll = 0;
-  } else {
-    image(gameSceneImg, 0, scroll, width, height);
-    image(gameSceneImg, 0, scroll-height, width, height);
-    scroll += scrollSpeed;
-    if (scroll >= height) scroll = 0;
-  }
-  /*********************/
-
+  setSceneUI();
   myCar.move();
   for (ObjectCar o : obj) {
     o.move();
@@ -164,18 +289,11 @@ void gameScene() {
 }
 
 void settingScene() {
-  /**** Background *****/
-  tint(255, 200);
-  image(settingSceneImg, 0, 0, width, height);
-  noTint();
-  /*********************/
+  setSceneUI();
+}
 
-  /****** Button ******/
-  difficultyEasyBtn.create();
-  difficultyNormalBtn.create();
-  difficultyHardBtn.create();
-  previousBtn.create();
-  /*********************/
+void gameOverScene() {
+  setSceneUI();
 }
 
 
@@ -208,6 +326,9 @@ public void mousePressed() {
     } else if (difficultyHardBtn.isClicked(mouseX, mouseY)) {
       difficultyHardBtn.changeColorPressed();
     }
+  }
+  // process in gameOverScreen
+  else if (scene == 3) {
   }
   println("mousePressed() Event is called (" + mouseX + ", " + mouseY + ")");
 }
@@ -249,6 +370,13 @@ public void mouseReleased() {
       setTraffic(3);
     }
   }
+  // process in gameOverScreen
+  else if (scene == 3) {
+    scene = 0;
+    score = 0;
+    life = 100;
+    setObject();
+  }
   println("mousRealesed() Event is called (" + mouseX + ", " + mouseY + ")");
 }
 
@@ -277,10 +405,10 @@ public void keyPressed() {
         bBrake = true;
       }
     } else if (keyCode == 32) { // SpaceBar
-      scrollSpeed = initScrollSpeed / 3; // scrollSpeed -> 1/3
-      for (ObjectCar o : obj) {
-        o.carSpeed = o.initCarSpeed / 2; // objectSpeed -> 1/2
-      }
+      //scrollSpeed = initScrollSpeed / 3; // scrollSpeed -> 1/3
+      //for (ObjectCar o : obj) {
+      //  o.carSpeed = o.initCarSpeed / 2; // objectSpeed -> 1/2
+      //}
       pressedSpacebar = true;
     } else if (keyCode == 80) { // P
       println("pause");
@@ -300,10 +428,10 @@ public void keyReleased() {
   // process in gameScreen
   if (scene == 1) {
     if (keyCode == 32) {
-      scrollSpeed = initScrollSpeed; // scrollSpeed -> origin
-      for (ObjectCar o : obj) {
-        o.carSpeed = o.initCarSpeed;
-      }
+      //scrollSpeed = initScrollSpeed; // scrollSpeed -> origin
+      //for (ObjectCar o : obj) {
+      //  o.carSpeed = o.initCarSpeed;
+      //}
       pressedSpacebar = false;
     }
     if (key == CODED) {
@@ -523,6 +651,7 @@ class Car {
           //carX = prevX + 20;
           carY = prevY + 20;
           carSpeed = 0;
+          isGameOver(--life);
           println("collide()");
         }
       } 
@@ -531,6 +660,7 @@ class Car {
           //carX = prevX -20;
           carY = prevY - 20;
           carSpeed = 0;
+          isGameOver(--life);
           println("collide()");
         }
       }
