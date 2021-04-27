@@ -5,35 +5,37 @@
 //
 // MVC Pattern
 // MODEL : Class(Button, Car), Object
-// VIEW : Screen(Menu, Game, Setting);
+// VIEW : Scene(Menu, Game, Setting);
 // CONTROLLER : Event(Mouse, Keyboard)
 //
 /************************************************/
 /*                   Variables                  */
 /************************************************/
-// gameScreen : select Screen
+// scene : select Scene
 // difficulty : game`s difficulty (1 ~ 3)
 // objMinSpeed : It changes with difficulty
 // objMaxSpeed : It changes with difficulty
 // traffic : amount of object
+// life : if detected collision then life -1
 // scroll : scroll the background image infinity
 // initScrollSpeed : inital Scroll Speed for return to origin speed
 // ScrollSpeed : current background image scroll speed
 // bAccel, bBrake, .. : pressed the Button THEN True ELSE False
 
-int gameScreen = 0;
+int scene = 0;
 int difficulty = 2;
 int objMinSpeed = 4;
 int objMaxSpeed = 8;
 int traffic = 10;
+int life = 5;
 float scroll = 0;
 float initScrollSpeed = 50.0;
 float scrollSpeed = initScrollSpeed;
 boolean bAccel, bBrake, bLeft, bRight;
 boolean pressedSpacebar;
-PImage menuScreenImg;
-PImage gameScreenImg;
-PImage settingScreenImg;
+PImage menuSceneImg;
+PImage gameSceneImg;
+PImage settingSceneImg;
 
 color buttonColor = color(160, 160, 160, 200);
 
@@ -63,9 +65,9 @@ void setup() {
 }
 
 void setImage() {
-  menuScreenImg = loadImage("menuScreenImg.png");
-  gameScreenImg = loadImage("gameScreenImg.png");
-  settingScreenImg = loadImage("settingScreenImg.jpg");
+  menuSceneImg = loadImage("menuSceneImg.png");
+  gameSceneImg = loadImage("gameSceneImg.png");
+  settingSceneImg = loadImage("settingSceneImg.jpg");
 }
 
 void setButton() {
@@ -102,32 +104,32 @@ void setTraffic(int difficult) {
 }
 
 /************************************************/
-/*                SCREEN VIEW                   */
+/*                SCENE VIEW                   */
 /************************************************/
 
 void draw() {
   background(255); // Screen Initialize
 
   // menu Screen
-  if (gameScreen == 0) {
-    menuScreen();
+  if (scene == 0) {
+    menuScene();
   }
 
   // game Screen
-  else if (gameScreen == 1) {
-    gameScreen();
+  else if (scene == 1) {
+    gameScene();
   }
 
   // setting Screen
-  else if (gameScreen == 2) {
-    settingScreen();
+  else if (scene == 2) {
+    settingScene();
   }
 }
 
-void menuScreen() {
+void menuScene() {
   /**** Background *****/
   tint(255, 230); // tint(gray, alpha);
-  image(menuScreenImg, 0, 0, width, height);
+  image(menuSceneImg, 0, 0, width, height);
   noTint();
   /*********************/
 
@@ -138,18 +140,18 @@ void menuScreen() {
   /*********************/
 }
 
-void gameScreen() {
+void gameScene() {
   /**** Background *****/
   if (pressedSpacebar) {
     tint(255, 230);
-    image(gameScreenImg, 0, scroll, width, height);
-    image(gameScreenImg, 0, scroll-height, width, height);
+    image(gameSceneImg, 0, scroll, width, height);
+    image(gameSceneImg, 0, scroll-height, width, height);
     noTint();
     scroll += scrollSpeed;
     if (scroll >= height) scroll = 0;
   } else {
-    image(gameScreenImg, 0, scroll, width, height);
-    image(gameScreenImg, 0, scroll-height, width, height);
+    image(gameSceneImg, 0, scroll, width, height);
+    image(gameSceneImg, 0, scroll-height, width, height);
     scroll += scrollSpeed;
     if (scroll >= height) scroll = 0;
   }
@@ -161,10 +163,10 @@ void gameScreen() {
   }
 }
 
-void settingScreen() {
+void settingScene() {
   /**** Background *****/
   tint(255, 200);
-  image(settingScreenImg, 0, 0, width, height);
+  image(settingSceneImg, 0, 0, width, height);
   noTint();
   /*********************/
 
@@ -183,7 +185,7 @@ void settingScreen() {
 
 public void mousePressed() {
   // process in muneScreen
-  if (gameScreen == 0) {
+  if (scene == 0) {
     if (startBtn.isClicked(mouseX, mouseY)) {
       startBtn.changeColorPressed();
     } else if (settingBtn.isClicked(mouseX, mouseY)) {
@@ -193,10 +195,10 @@ public void mousePressed() {
     }
   }
   // process in gameScreen
-  else if (gameScreen == 1) {
+  else if (scene == 1) {
   }
   // process in settingScreen
-  else if (gameScreen == 2) {
+  else if (scene == 2) {
     if (previousBtn.isClicked(mouseX, mouseY)) {
       previousBtn.changeColorPressed();
     } else if (difficultyEasyBtn.isClicked(mouseX, mouseY)) {
@@ -212,33 +214,33 @@ public void mousePressed() {
 
 public void mouseReleased() {
   // process in muneScreen
-  if (gameScreen == 0) {
+  if (scene == 0) {
     // the color of button is return to origin
     startBtn.changeColorReleased();
     settingBtn.changeColorReleased();
     exitBtn.changeColorReleased();
     if (startBtn.isClicked(mouseX, mouseY)) {
-      gameScreen = 1;
+      scene = 1;
     } else if (settingBtn.isClicked(mouseX, mouseY)) {
-      gameScreen = 2;
+      scene = 2;
     } else if (exitBtn.isClicked(mouseX, mouseY)) {
       exit();
     }
   }
 
   // process in gameScreen
-  else if (gameScreen == 1) {
+  else if (scene == 1) {
   }
 
   // process in settingScreen
-  else if (gameScreen == 2) {
+  else if (scene == 2) {
     // the color of button is return to origin
     previousBtn.changeColorReleased();
     difficultyEasyBtn.changeColorReleased();
     difficultyNormalBtn.changeColorReleased();
     difficultyHardBtn.changeColorReleased();
     if (previousBtn.isClicked(mouseX, mouseY)) {
-      gameScreen = 0;
+      scene = 0;
     } else if (difficultyEasyBtn.isClicked(mouseX, mouseY)) {
       setTraffic(1);
     } else if (difficultyNormalBtn.isClicked(mouseX, mouseY)) {
@@ -252,11 +254,11 @@ public void mouseReleased() {
 
 public void keyPressed() {
   // process in menuScreen
-  if (gameScreen == 0) {
+  if (scene == 0) {
   }
 
   // process in gameScreen
-  if (gameScreen == 1) {
+  if (scene == 1) {
     if (key == CODED) {
       if (keyCode == UP) {
         println("bAccel");
@@ -286,17 +288,17 @@ public void keyPressed() {
   }
 
   // process in settingScreen
-  if (gameScreen == 2) {
+  if (scene == 2) {
   }
 }
 
 public void keyReleased() {
   // process in menuScreen
-  if (gameScreen == 0) {
+  if (scene == 0) {
   }
 
   // process in gameScreen
-  if (gameScreen == 1) {
+  if (scene == 1) {
     if (keyCode == 32) {
       scrollSpeed = initScrollSpeed; // scrollSpeed -> origin
       for (ObjectCar o : obj) {
@@ -320,7 +322,7 @@ public void keyReleased() {
     }
 
     // process in settingScreen
-    if (gameScreen == 2) {
+    if (scene == 2) {
     }
   }
 }
@@ -518,16 +520,16 @@ class Car {
     for (ObjectCar o : obj) {
       if (o.lane == "reverse") {
         if (dist(x, y, o.carX, o.carY1) < 40) {
-          carX = prevX * 0.97;
-          carY = prevY + 10;
+          //carX = prevX + 20;
+          carY = prevY + 20;
           carSpeed = 0;
           println("collide()");
         }
       } 
       if (o.lane == "forward") {
         if (dist(x, y, o.carX, o.carY2) < 40) {
-          carX = prevX * 0.97;
-          carY = prevY - 10;
+          //carX = prevX -20;
+          carY = prevY - 20;
           carSpeed = 0;
           println("collide()");
         }
