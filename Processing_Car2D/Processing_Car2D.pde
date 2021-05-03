@@ -30,8 +30,9 @@ int scene = 0;
 int difficulty = 2;
 int objMinSpeed = 4;
 int objMaxSpeed = 8;
-int traffic = 10;
-int life = 100;
+int traffic = 30;
+int initLife = 20;
+int life = initLife;
 int score = 0;
 int abillity = 100;
 float scroll = 0;
@@ -73,7 +74,7 @@ void setup() {
 }
 
 void setImage() {
-  menuSceneImg = loadImage("menuSceneImg.png");
+  menuSceneImg = loadImage("sunwoo.jpg");
   gameSceneImg = loadImage("gameSceneImg.png");
   settingSceneImg = loadImage("settingSceneImg.jpg");
   gameOverSceneImg = loadImage("gameOverSceneImg.jpg");
@@ -100,13 +101,13 @@ void setObject() {
 void setTraffic(int difficult) {
   switch(difficult) {
   case 1:
-    traffic = 5;
+    traffic = 20;
     break;
   case 2:
-    traffic = 10;
+    traffic = 30;
     break;
   case 3:
-    traffic = 15;
+    traffic = 50;
     break;
   }
   setObject();
@@ -176,12 +177,12 @@ void setSceneUI() {
     /*********************/
     
     /****** TEXT *********/
-    textSize(80);
+    textSize(70);
     textAlign(CENTER);
     fill(90,90,90);
-    text("Car 2D !", 365, 205);
+    text("SANG BBANG CAR !", 365, 205);
     fill(255,0,0);
-    text("Car 2D !", 360, 200);
+    text("SANG BBANG CAR !", 360, 200);
      
     /*********************/
     break;
@@ -385,7 +386,7 @@ public void mouseReleased() {
   else if (scene == 3) {
     scene = 0;
     score = 0;
-    life = 100;
+    life = initLife;
     setObject();
   }
   println("mousRealesed() Event is called (" + mouseX + ", " + mouseY + ")");
@@ -676,8 +677,8 @@ class ObjectCar {
   float initCarSpeed = carSpeed;
   color carColor = color(random(0, 255), random(0, 255), random(0, 255));
   color[] carLightColor = {color(255, 255, 255), color(241, 255, 49)};
-  int[] spawnPosX = {195, 300, 415, 530};
-  int carX = spawnPosX[(int)random(0, 4)];
+  int[] spawnPosX = {139, 195, 248, 300, 357, 415, 470, 530, 580};
+  int carX = spawnPosX[(int)random(0, 9)];
   float carY1 = 0;
   float carY2 = height;
   int carW = 40;
@@ -737,16 +738,16 @@ class ObjectCar {
     }
   }
   void changePos() {
-    carX = spawnPosX[(int)random(0, 4)];
+    carX = spawnPosX[(int)random(0, 9)];
   }
   void changeColor() { 
     carColor = color(random(0, 255), random(0, 255), random(0, 255));
   }
   void changeLane() {
-    if (carX == 195 || carX == 300) {
+    if (carX == 139 || carX == 195 || carX == 248 || carX == 300 || carX == 357) {
       lane = "reverse";
     }
-    if (carX == 415 || carX == 530) {
+    if (carX == 415 || carX == 470 || carX == 530 || carX == 580) {
       lane = "forward";
     }
   }
