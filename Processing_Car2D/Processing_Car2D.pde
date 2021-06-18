@@ -12,6 +12,8 @@ static enum SceneEnum {
 static enum difficultyEnum {
   easy, normal, hard
 }
+
+// global variables
 int objMinSpeed = 4;
 int objMaxSpeed = 8;
 int traffic = 10;
@@ -35,9 +37,11 @@ color menuButtonColor;
 color settingButtonColor;
 color textColor;
 
+// const int for clean code
 static final int LEFT_WALL = 145;
 static final int RIGHT_WALL = 570;
 
+// Initialize
 difficultyEnum currentDifficulty = difficultyEnum.normal;
 SceneEnum currentScene = SceneEnum.main;
 
@@ -51,7 +55,9 @@ Button dayBtn;
 Button nightBtn;
 Button previousBtn;
 
+// MyCar : Character
 Car myCar;
+// Objects
 ObjectCar[] obj;
 
 /************************************************/
@@ -61,7 +67,7 @@ ObjectCar[] obj;
 void setup() {
   size(720, 900);
   smooth();
-  frameRate(30);
+  frameRate(30); // for gameSpeed
   rectMode(CENTER);
   setFont(); // load fonts
   setImage(); // load images
@@ -78,7 +84,7 @@ void setFont() {
 void setImage() {
   sceneImgs = new PImage[4];
   previewImgs = new PImage[2];
-  sceneImgs[0] = loadImage("backgroundImg.png");
+  sceneImgs[0] = loadImage("menuSceneImg.png");
   sceneImgs[1] = loadImage("gameSceneImg.png");
   sceneImgs[2] = loadImage("settingSceneImg.jpg");
   sceneImgs[3] = loadImage("gameOverSceneImg.jpg");
@@ -252,10 +258,11 @@ void gameScene() {
   abillity = constrain(abillity, 0, 100);
 
   /****** TEXT *********/
-  textSize(40);
-  fill(0, 255, 0);
+  textSize(30);
+  fill(0, 255, 40);
   String f = Float.toString(Math.round(frameRate));
-  text(f, 50, 50);
+  text("fps", 50, 30);
+  text(f, 50, 65);
 
   fill(0, 0, 0, 100);
   rect(655, 100, 70, 140);
@@ -297,6 +304,10 @@ void settingScene() {
   tint(255, 200);
   image(sceneImgs[2], 0, 0, width, height);
   noTint();
+  if (isNight) {
+    fill(0, 0, 0, 150);
+    rect(0, 0, width*2, height*2);
+  }
   /*********************/
 
   /****** Button *******/
@@ -617,7 +628,7 @@ class Car {
     rotate(carRot);
 
     //bumper
-    stroke(0, 0, 255);
+    stroke(255);
     fill(255, 255, 255);
     ellipse(0, -28, 40, 15);
     ellipse(0, 28, 42, 15);
@@ -635,16 +646,30 @@ class Car {
     rect(0, 0, carW, carH);
 
     // light
-    stroke(100);
+    stroke(220);
     strokeWeight(1);
-    fill(241, 255, 49);
-    rect(-13, -25, 14, 10);
-    rect(13, -25, 14, 10);
+    fill(255, 255, 0);
+    rect(-15, -25, 10, 6);
+    rect(15, -25, 10, 6);
     noStroke();
 
-    // up
-    fill(198, 198, 198);
-    rect(0, 0, 30, 40);
+    //window
+    fill(90, 90, 90);
+    ellipse(0, -15, 30, 7);
+
+    //top
+    fill(200, 200, 200);
+    rect(0, 0, 32, 16);
+
+    //backWindow
+    fill(90, 90, 90);
+    ellipse(0, 15, 28, 7);
+    stroke(20);
+    fill(20);
+    rect(0, 42, 46, 8);
+    rect(-8, 34, 6, 10);
+    rect(8, 34, 6, 10);
+    noStroke();
 
     // center : White
     stroke(0);
