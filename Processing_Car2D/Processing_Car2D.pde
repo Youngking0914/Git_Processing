@@ -58,7 +58,7 @@ ObjectCar[] obj;
 void setup() {
   size(720, 900);
   smooth();
-  frameRate(60);
+  frameRate(30);
   rectMode(CENTER);
   setFont(); // load fonts
   setImage(); // load images
@@ -69,7 +69,7 @@ void setup() {
 }
 
 void setFont() {
- font = loadFont("ArialRoundedMTBold-80.vlw");
+ font = loadFont("ArialRoundedMTBold-120.vlw");
 }
 
 void setImage() {
@@ -174,7 +174,7 @@ void draw() {
 
 void menuScene() {
     /**** Background *****/
-    tint(255, 230); // tint(gray, alpha);
+    tint(255, 190); // tint(gray, alpha);
     image(sceneImgs[0], 0, 0, width, height);
     noTint();
     /*********************/
@@ -193,7 +193,7 @@ void menuScene() {
     textAlign(CENTER);
     fill(60,60,60);
     text("Car 2D !", 365, 305);
-    fill(255,0,0);
+    fill(160,131,203);
     text("Car 2D !", 360, 300);
     popMatrix();
      
