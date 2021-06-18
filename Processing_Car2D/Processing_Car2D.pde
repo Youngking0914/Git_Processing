@@ -3,9 +3,12 @@
 /************************************************/
 // made by YoungKyu
 
+// select Scene
 static enum SceneEnum {
   main, game, setting, gameOver
 }
+
+// select difficulty
 static enum difficultyEnum {
   easy, normal, hard
 }
@@ -20,6 +23,7 @@ float initScrollSpeed = 50.0;
 float scrollSpeed = initScrollSpeed;
 boolean bAccel, bBrake, bLeft, bRight;
 boolean pressedSpacebar;
+boolean isNight = false;
 
 PImage[] sceneImgs;
 PImage[] previewImgs;
@@ -46,7 +50,6 @@ Button difficultyHardBtn;
 Button dayBtn;
 Button nightBtn;
 Button previousBtn;
-
 
 Car myCar;
 ObjectCar[] obj;
@@ -80,7 +83,7 @@ void setImage() {
   sceneImgs[2] = loadImage("settingSceneImg.jpg");
   sceneImgs[3] = loadImage("gameOverSceneImg.jpg");
   previewImgs[0] = loadImage("dayPlayImg.png");
-  previewImgs[1] = loadImage("gameSceneImg.png");
+  previewImgs[1] = loadImage("nightPlayImg.png");
 }
 
 void setButton() {
@@ -150,7 +153,7 @@ void setAppearance() {
 }
 
 /************************************************/
-/*                SCENE VIEW                   */
+/*                     SCENE                    */
 /************************************************/
 
 void draw() {
@@ -183,7 +186,6 @@ void menuScene() {
   startBtn.create();
   settingBtn.create();
   exitBtn.create();
-
   /*********************/
 
   /****** TEXT *********/
@@ -196,7 +198,6 @@ void menuScene() {
   fill(160, 131, 203);
   text("Car 2D !", 360, 300);
   popMatrix();
-
   /*********************/
 }
 
@@ -213,12 +214,15 @@ void gameScene() {
     ellipse(myCar.carX, myCar.carY, 100, 125);
     noTint();
     scroll += scrollSpeed;
-    if (scroll >= height) scroll = 0;
   } else {
     image(sceneImgs[1], 0, scroll, width, height);
     image(sceneImgs[1], 0, scroll-height, width, height);
     scroll += scrollSpeed;
-    if (scroll >= height) scroll = 0;
+  }
+  if (scroll >= height) scroll = 0;
+  if (isNight) {
+    fill(0, 0, 0, 150);
+    rect(0, 0, width*2, height*2);
   }
   /*********************/
 
@@ -245,7 +249,6 @@ void gameScene() {
       o.carSpeed = o.initCarSpeed;
     }
   }
-
   abillity = constrain(abillity, 0, 100);
 
   /****** TEXT *********/
@@ -286,7 +289,7 @@ void gameScene() {
   if (abillity >= 100) {
     rect(655, 230, 60, 20);
   }
-  /*********************/
+  /***********************/
 }
 
 void settingScene() {
@@ -362,7 +365,7 @@ void isGameOver(int life) {
 }
 
 /************************************************/
-/*              EVENT CONTROLLER                */
+/*                    EVENT                     */
 /************************************************/
 
 public void mousePressed() {
@@ -440,8 +443,10 @@ public void mouseReleased() {
       setTraffic();
     } else if (dayBtn.isClicked(mouseX, mouseY)) {
       currentPreviewImg = previewImgs[0];
+      isNight = false;
     } else if (nightBtn.isClicked(mouseX, mouseY)) {
       currentPreviewImg = previewImgs[1];
+      isNight = true;
     }
   }
   // process in gameOverScreen
@@ -522,7 +527,7 @@ public void keyReleased() {
 }
 
 /************************************************/
-/*                CLASS MODEL                   */
+/*                    CLASS                     */
 /************************************************/
 
 class Button {
