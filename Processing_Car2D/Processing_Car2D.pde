@@ -751,26 +751,28 @@ class Car {
 }
 
 class ObjectCar {
-  float carSpeed = random(objMinSpeed, objMaxSpeed);
-  float initCarSpeed = carSpeed;
-  int[] reverseDesignList = {1, 2};
-  int[] forwardDesignList = {1};
-  int[] laneList = {LANE_1, LANE_2, LANE_3, LANE_4};
-  int carX = laneList[(int)random(0, 4)];
-  int reverseDesign = reverseDesignList[(int)random(0, 2)];
-  int forwardDesign = forwardDesignList[(int)random(0, 1)];
-  float carY1 = 0; // top of screen
-  float carY2 = height; // bottom of screen
   private static final int carW = 40;
   private static final int carH = 60;
-  String lane;
   private static final int LANE_1 = 195;
   private static final int LANE_2 = 300;
   private static final int LANE_3 = 415;
   private static final int LANE_4 = 530;
 
+  float carSpeed = random(objMinSpeed, objMaxSpeed);
+  float initCarSpeed = carSpeed;
+  int[] reverseDesignList = {1, 2, 3, 4};
+  int[] forwardDesignList = {1, 2, 3, 4};
+  int[] laneList = {LANE_1, LANE_2, LANE_3, LANE_4};
+  int carX = laneList[(int)random(0, laneList.length)];
+  int reverseDesign;
+  int forwardDesign;
+  float carY1 = 0; // top of screen
+  float carY2 = height; // bottom of screen
+  String lane;
+
   public ObjectCar() {
     changeLane();
+    changeDesign();
   }
 
   void load() {
@@ -783,8 +785,14 @@ class ObjectCar {
       case 1:
         reverseDesign2();
         break;
+      case 2:
+        reverseDesign3();
+        break;
+      case 3:
+        reverseDesign4();
+        break;
       }
-    } 
+    }
     if (lane == "forward") {
       move();
       switch(forwardDesign) {
@@ -792,7 +800,13 @@ class ObjectCar {
         forwardDesign1();
         break;
       case 1:
-        //forwardDesign2();
+        forwardDesign2();
+        break;
+      case 2:
+        forwardDesign3();
+        break;
+      case 3:
+        forwardDesign4();
         break;
       }
     }
@@ -805,8 +819,6 @@ class ObjectCar {
     if (lane == "forward") {
       carY2 -= carSpeed;
     }
-
-    //load();
 
     // infinity reverse lane
     if (carY1 - (carH/2) > height) {
@@ -824,11 +836,11 @@ class ObjectCar {
     }
   }
   void changePos() {
-    carX = laneList[(int)random(0, 4)];
+    carX = laneList[(int)random(0, laneList.length)];
   }
   void changeDesign() { 
-    //carColor = color(random(0, 255), random(0, 255), random(0, 255));
     reverseDesign = (int)random(0, reverseDesignList.length);
+    forwardDesign = (int)random(0, forwardDesignList.length);
   }
   void changeLane() {
     if (carX == LANE_1 || carX == LANE_2) {
@@ -839,15 +851,21 @@ class ObjectCar {
     }
   }
 
+  //white car
   void reverseDesign1() {
     pushMatrix();
     translate(carX, carY1);
+
     //bumper
-    stroke(0, 0, 255);
-    fill(255, 255, 255);
+    stroke(240, 240, 240);
+    fill(240, 240, 240);
     ellipse(0, -28, 40, 15);
-    ellipse(0, 28, 42, 15);
+    ellipse(0, 28, 40, 15);
     noStroke();
+
+    //body
+    fill(240, 240, 240);
+    rect(0, 0, carW, carH);
 
     //tire
     fill(0);
@@ -856,68 +874,44 @@ class ObjectCar {
     ellipse(-22, 20, 6, 12);
     ellipse(22, 20, 6, 12);
 
-    // body
-    fill(255);
-    rect(0, 0, carW, carH);
-
     // light
-    stroke(100);
+    stroke(255, 255, 0);
     strokeWeight(1);
-    fill(241, 255, 49);
-    rect(-13, 25, 14, 10);
-    rect(13, 25, 14, 10);
+    fill(255, 255, 0);
+    rect(-15, 25, 8, 5);
+    rect(15, 25, 8, 5);
     noStroke();
 
-    // up
-    fill(198, 198, 198);
-    rect(0, 0, 30, 40);
+    //window
+    fill(90, 90, 90);
+    ellipse(0, 15, 30, 7);
 
-    // center : White
-    stroke(0);
-    strokeWeight(2);
-    fill(255, 255, 255);
-    rect(0, 0, 8, 8);
-    noStroke();
+    //top
+    fill(200, 200, 200);
+    rect(0, 0, 30, 15);
 
-    // left : Red
-    stroke(0);
-    strokeWeight(2);
-    fill(255, 0, 0);
-    rect(-8, 0, 8, 8);
-    noStroke();
-
-    // right : Blue
-    stroke(0);
-    strokeWeight(2);
-    fill(0, 0, 255);
-    rect(8, 0, 8, 8);
-    noStroke();
-
-    //side line
-    stroke(0, 0, 255);
-    strokeWeight(3);
-    line(-20, -20, -20, 20);
-    line(20, 20, 20, -20);
-    noStroke();
-
-    //back light
-    stroke(255, 0, 0);
-    strokeWeight(3);
-    line(-18, -25, -8, -25);
-    line(8, -25, 18, -25);
-    noStroke();
+    //backWindow
+    fill(90, 90, 90);
+    ellipse(0, -15, 28, 7);
 
     popMatrix();
   }
+
+  //red car
   void reverseDesign2() {
     pushMatrix();
     translate(carX, carY1);
+
     //bumper
-    stroke(0, 0, 255);
-    fill(255, 255, 255);
+    stroke(255, 70, 70);
+    fill(255, 70, 70);
     ellipse(0, -28, 40, 15);
-    ellipse(0, 28, 42, 15);
+    ellipse(0, 28, 40, 15);
     noStroke();
+
+    //body
+    fill(255, 70, 70);
+    rect(0, 0, carW, carH);
 
     //tire
     fill(0);
@@ -926,74 +920,304 @@ class ObjectCar {
     ellipse(-22, 20, 6, 12);
     ellipse(22, 20, 6, 12);
 
-    // body
-    fill(0);
-    rect(0, 0, carW, carH);
-
     // light
-    stroke(100);
+    stroke(255, 255, 0);
     strokeWeight(1);
-    fill(255, 0, 0);
-    rect(-13, 25, 14, 10);
-    rect(13, 25, 14, 10);
+    fill(255, 255, 0);
+    rect(-15, 25, 8, 5);
+    rect(15, 25, 8, 5);
     noStroke();
 
-    // up
-    fill(198, 198, 198);
-    rect(0, 0, 30, 40);
+    //window
+    fill(90, 90, 90);
+    ellipse(0, 15, 30, 7);
 
-    // center : White
-    stroke(0);
-    strokeWeight(2);
-    fill(200, 200, 255);
-    rect(0, 0, 8, 8);
-    noStroke();
+    //top
+    fill(200, 200, 200);
+    rect(0, 0, 30, 15);
 
-    // left : Red
-    stroke(0);
-    strokeWeight(2);
-    fill(255, 0, 0);
-    rect(-8, 0, 8, 8);
-    noStroke();
-
-    // right : Blue
-    stroke(0);
-    strokeWeight(2);
-    fill(0, 0, 255);
-    rect(8, 0, 8, 8);
-    noStroke();
-
-    //side line
-    stroke(0, 0, 255);
-    strokeWeight(3);
-    line(-20, -20, -20, 20);
-    line(20, 20, 20, -20);
-    noStroke();
-
-    //back light
-    stroke(255, 0, 0);
-    strokeWeight(3);
-    line(-18, -25, -8, -25);
-    line(8, -25, 18, -25);
-    noStroke();
+    //backWindow
+    fill(90, 90, 90);
+    ellipse(0, -15, 28, 7);
 
     popMatrix();
   }
 
-  void forwardDesign1() {
+  //yellow car
+  void reverseDesign3() {
     pushMatrix();
-    translate(carX, carY2);
-    
+    translate(carX, carY1);
+
+    //bumper
+    stroke(250, 213, 0);
+    fill(250, 213, 0);
+    ellipse(0, 28, 40, 15);
+    stroke(20);
+    fill(20);
+    rect(0, -34, 46, 8);
+    noStroke();
+
     //body
-    fill(255);
-    rect(0, 0, carX, carY2);
-    
+    fill(250, 213, 0);
+    rect(0, 0, carW, carH);
+
     //tire
     fill(0);
     ellipse(-22, -13, 6, 12);
     ellipse(22, -13, 6, 12);
     ellipse(-22, 20, 6, 12);
     ellipse(22, 20, 6, 12);
+
+    // light
+    stroke(20, 20, 20);
+    strokeWeight(1);
+    fill(20, 20, 20);
+    ellipse(-15, 25, 8, 5);
+    ellipse(15, 25, 8, 5);
+    noStroke();
+
+    //window
+    fill(50, 50, 50);
+    ellipse(0, 15, 30, 7);
+
+    //top
+    fill(214, 184, 15);
+    rect(0, 0, 30, 15);
+
+    //backWindow
+    fill(50, 50, 50);
+    ellipse(0, -15, 28, 7);
+
+    popMatrix();
+  }
+
+  //blue car
+  void reverseDesign4() {
+    pushMatrix();
+    translate(carX, carY1);
+
+    //bumper
+    stroke(19, 102, 232);
+    fill(19, 102, 232);
+    ellipse(0, 28, 40, 15);
+    noStroke();
+
+    //body
+    fill(19, 102, 232);
+    rect(0, 0, carW, carH);
+
+    //tire
+    fill(0);
+    ellipse(-22, -13, 6, 12);
+    ellipse(22, -13, 6, 12);
+    ellipse(-22, 20, 6, 12);
+    ellipse(22, 20, 6, 12);
+
+    // light
+    stroke(200);
+    strokeWeight(2);
+    fill(255, 255, 255);
+    rect(-15, 25, 8, 5);
+    rect(15, 25, 8, 5);
+    noStroke();
+
+    //window
+    fill(250, 250, 250);
+    rect(0, 15, 30, 7);
+
+    //top
+    fill(24, 80, 167);
+    rect(0, 0, 30, 15);
+
+    //back
+    fill(43, 43, 43);
+    rect(0, -15, 35, 25);
+
+    popMatrix();
+  }
+
+  //blue car
+  void forwardDesign1() {
+    pushMatrix();
+    translate(carX, carY2);
+
+    //bumper
+    stroke(19, 102, 232);
+    fill(19, 102, 232);
+    ellipse(0, -28, 40, 15);
+    noStroke();
+
+    //body
+    fill(19, 102, 232);
+    rect(0, 0, carW, carH);
+
+    //tire
+    fill(0);
+    ellipse(-22, -13, 6, 12);
+    ellipse(22, -13, 6, 12);
+    ellipse(-22, 20, 6, 12);
+    ellipse(22, 20, 6, 12);
+
+    // light
+    stroke(200);
+    strokeWeight(2);
+    fill(255, 255, 255);
+    rect(-15, -25, 8, 5);
+    rect(15, -25, 8, 5);
+    noStroke();
+
+    //window
+    fill(250, 250, 250);
+    rect(0, -15, 30, 7);
+
+    //top
+    fill(24, 80, 167);
+    rect(0, 0, 30, 15);
+
+    //back
+    fill(43, 43, 43);
+    rect(0, 15, 35, 25);
+
+    popMatrix();
+  }
+
+  //white car
+  void forwardDesign2() {
+    pushMatrix();
+    translate(carX, carY2);
+
+    //bumper
+    stroke(240, 240, 240);
+    fill(240, 240, 240);
+    ellipse(0, -28, 40, 15);
+    ellipse(0, 28, 40, 15);
+    noStroke();
+
+    //body
+    fill(240, 240, 240);
+    rect(0, 0, carW, carH);
+
+    //tire
+    fill(0);
+    ellipse(-22, -13, 6, 12);
+    ellipse(22, -13, 6, 12);
+    ellipse(-22, 20, 6, 12);
+    ellipse(22, 20, 6, 12);
+
+    // light
+    stroke(255, 255, 0);
+    strokeWeight(1);
+    fill(255, 255, 0);
+    rect(-15, -25, 8, 5);
+    rect(15, -25, 8, 5);
+    noStroke();
+
+    //window
+    fill(90, 90, 90);
+    ellipse(0, -15, 30, 7);
+
+    //top
+    fill(200, 200, 200);
+    rect(0, 0, 30, 15);
+
+    //backWindow
+    fill(90, 90, 90);
+    ellipse(0, 15, 28, 7);
+
+    popMatrix();
+  }
+
+  //red car
+  void forwardDesign3() {
+    pushMatrix();
+    translate(carX, carY2);
+
+    //bumper
+    stroke(255, 70, 70);
+    fill(255, 70, 70);
+    ellipse(0, -28, 40, 15);
+    ellipse(0, 28, 40, 15);
+    noStroke();
+
+    //body
+    fill(255, 70, 70);
+    rect(0, 0, carW, carH);
+
+    //tire
+    fill(0);
+    ellipse(-22, -13, 6, 12);
+    ellipse(22, -13, 6, 12);
+    ellipse(-22, 20, 6, 12);
+    ellipse(22, 20, 6, 12);
+
+    // light
+    stroke(255, 255, 0);
+    strokeWeight(1);
+    fill(255, 255, 0);
+    rect(-15, -25, 8, 5);
+    rect(15, -25, 8, 5);
+    noStroke();
+
+    //window
+    fill(90, 90, 90);
+    ellipse(0, -15, 30, 7);
+
+    //top
+    fill(200, 200, 200);
+    rect(0, 0, 30, 15);
+
+    //backWindow
+    fill(90, 90, 90);
+    ellipse(0, 15, 28, 7);
+
+    popMatrix();
+  }
+
+  //yellow car
+  void forwardDesign4() {
+    pushMatrix();
+    translate(carX, carY2);
+
+    //bumper
+    stroke(250, 213, 0);
+    fill(250, 213, 0);
+    ellipse(0, -28, 40, 15);
+    stroke(20);
+    fill(20);
+    rect(0, 34, 46, 8);
+    noStroke();
+
+    //body
+    fill(250, 213, 0);
+    rect(0, 0, carW, carH);
+
+    //tire
+    fill(0);
+    ellipse(-22, -13, 6, 12);
+    ellipse(22, -13, 6, 12);
+    ellipse(-22, 20, 6, 12);
+    ellipse(22, 20, 6, 12);
+
+    // light
+    stroke(20, 20, 20);
+    strokeWeight(1);
+    fill(20, 20, 20);
+    ellipse(-15, -25, 8, 5);
+    ellipse(15, -25, 8, 5);
+    noStroke();
+
+    //window
+    fill(50, 50, 50);
+    ellipse(0, -15, 30, 7);
+
+    //top
+    fill(214, 184, 15);
+    rect(0, 0, 30, 15);
+
+    //backWindow
+    fill(50, 50, 50);
+    ellipse(0, 15, 28, 7);
+
     popMatrix();
   }
 }
