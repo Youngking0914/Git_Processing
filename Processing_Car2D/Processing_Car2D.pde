@@ -69,7 +69,7 @@ void setup() {
 }
 
 void setFont() {
- font = loadFont("ArialRoundedMTBold-120.vlw");
+  font = loadFont("ArialRoundedMTBold-120.vlw");
 }
 
 void setImage() {
@@ -87,33 +87,33 @@ void setButton() {
   menuButtonColor = color(25, 25, 25, 200);
   settingButtonColor = color(25, 25, 25, 150);
   textColor = color(255);
-  
+
   startBtn = new Button(360, 410, 150, 60, "START");
   settingBtn = new Button(360, 490, 150, 60, "Setting");
   exitBtn = new Button(360, 570, 150, 60, "EXIT");
-  
+
   difficultyEasyBtn = new Button(130, 140, 150, 60, "Easy");
   difficultyNormalBtn = new Button(130, 210, 150, 60, "Normal");
   difficultyHardBtn = new Button(130, 280, 150, 60, "Hard");
   dayBtn = new Button(130, 510, 150, 60, "Day");
   nightBtn = new Button(130, 580, 150, 60, "Night");
   previousBtn = new Button(130, 800, 150, 60, "Previous");
-  
+
   startBtn.setColor(menuButtonColor, textColor);
   settingBtn.setColor(menuButtonColor, textColor);
   exitBtn.setColor(menuButtonColor, textColor);
-  
+
   difficultyEasyBtn.setColor(settingButtonColor, textColor);
   difficultyNormalBtn.setColor(settingButtonColor, textColor);
   difficultyHardBtn.setColor(settingButtonColor, textColor);
   dayBtn.setColor(settingButtonColor, textColor);
   nightBtn.setColor(settingButtonColor, textColor);
   previousBtn.setColor(settingButtonColor, textColor);
-  
+
   startBtn.setTextSize(30);
   settingBtn.setTextSize(30);
   exitBtn.setTextSize(30);
-  
+
   difficultyEasyBtn.setTextSize(30);
   difficultyNormalBtn.setTextSize(30);
   difficultyHardBtn.setTextSize(30);
@@ -155,208 +155,205 @@ void setAppearance() {
 
 void draw() {
   background(255); // Scene Initialize
-  
+
   switch(currentScene) {
-    case main:
-      menuScene();
-      break;
-    case game:
-      gameScene();
-      break;
-    case setting:
-      settingScene();
-      break;
-    case gameOver:
-      gameOverScene();
-      break;
+  case main:
+    menuScene();
+    break;
+  case game:
+    gameScene();
+    break;
+  case setting:
+    settingScene();
+    break;
+  case gameOver:
+    gameOverScene();
+    break;
   }
 }
 
 void menuScene() {
-    /**** Background *****/
-    tint(255, 190); // tint(gray, alpha);
-    image(sceneImgs[0], 0, 0, width, height);
-    noTint();
-    /*********************/
+  /**** Background *****/
+  tint(255, 190); // tint(gray, alpha);
+  image(sceneImgs[0], 0, 0, width, height);
+  noTint();
+  /*********************/
 
-    /****** Button ******/
-    startBtn.create();
-    settingBtn.create();
-    exitBtn.create();
-    
-    /*********************/
-    
-    /****** TEXT *********/
-    pushMatrix();
-    textSize(140);
-    textFont(font, 140);
-    textAlign(CENTER);
-    fill(60,60,60);
-    text("Car 2D !", 365, 305);
-    fill(160,131,203);
-    text("Car 2D !", 360, 300);
-    popMatrix();
-     
-    /*********************/
+  /****** Button ******/
+  startBtn.create();
+  settingBtn.create();
+  exitBtn.create();
+
+  /*********************/
+
+  /****** TEXT *********/
+  pushMatrix();
+  textSize(140);
+  textFont(font, 140);
+  textAlign(CENTER);
+  fill(60, 60, 60);
+  text("Car 2D !", 365, 305);
+  fill(160, 131, 203);
+  text("Car 2D !", 360, 300);
+  popMatrix();
+
+  /*********************/
 }
 
 void gameScene() {
-    /**** Background *****/
-    if (pressedSpacebar) {
-      tint(100);
-      image(sceneImgs[1], 0, scroll, width, height);
-      image(sceneImgs[1], 0, scroll-height, width, height);
-      noTint();
-      tint(255, 250);
-      fill(255, 255, 255, 125);
-      ellipseMode(CENTER);
-      ellipse(myCar.carX, myCar.carY, 100, 125);
-      noTint();
-      scroll += scrollSpeed;
-      if (scroll >= height) scroll = 0;
-    } else {
-      image(sceneImgs[1], 0, scroll, width, height);
-      image(sceneImgs[1], 0, scroll-height, width, height);
-      scroll += scrollSpeed;
-      if (scroll >= height) scroll = 0;
-    }
-    /*********************/
+  /**** Background *****/
+  if (pressedSpacebar) {
+    tint(100);
+    image(sceneImgs[1], 0, scroll, width, height);
+    image(sceneImgs[1], 0, scroll-height, width, height);
+    noTint();
+    tint(255, 250);
+    fill(255, 255, 255, 125);
+    ellipseMode(CENTER);
+    ellipse(myCar.carX, myCar.carY, 100, 125);
+    noTint();
+    scroll += scrollSpeed;
+    if (scroll >= height) scroll = 0;
+  } else {
+    image(sceneImgs[1], 0, scroll, width, height);
+    image(sceneImgs[1], 0, scroll-height, width, height);
+    scroll += scrollSpeed;
+    if (scroll >= height) scroll = 0;
+  }
+  /*********************/
 
-    myCar.load();
-    for (ObjectCar o : obj) {
-      o.load();
-    }
-    score++;
-    
-    if (pressedSpacebar == true) {
-      if (abillity > 0) {
-        abillity--; 
-        scrollSpeed = initScrollSpeed / 3; // scrollSpeed -> 1/3
-        for (ObjectCar o : obj) {
-          o.carSpeed = o.initCarSpeed / 2; // objectSpeed -> 1/2
-        }
-      } 
-      else {
-        pressedSpacebar = false;
-      }
-    } 
-    else {  
-      abillity++;
-      scrollSpeed = initScrollSpeed; // scrollSpeed -> origin
-      for (ObjectCar o : obj) {
-        o.carSpeed = o.initCarSpeed;
-      }
-    }
-    
-    abillity = constrain(abillity, 0, 100);
+  myCar.load();
+  for (ObjectCar o : obj) {
+    o.load();
+  }
+  score++;
 
-    /****** TEXT *********/
-    textSize(40);
-    fill(0, 255, 0);
-    String f = Float.toString(Math.round(frameRate));
-    text(f, 50, 50);
-    
-    fill(0, 0, 0, 100);
-    rect(655, 100, 70, 140);
-
-    fill(255, 255, 0);
-    textSize(25);
-    text("LIFE", 655, 60);
-    text(life, 655, 90);
-    textSize(18);
-    text("SCORE", 655, 120);
-    textSize(20);
-    text(score, 655, 150);
-
-    fill(0, 0, 0, 100);
-    rect(655, 270, 70, 170);
-    fill(90, 234, 190);
-    textSize(15);
-    text("ABILLITY", 655, 205);
+  if (pressedSpacebar == true) {
     if (abillity > 0) {
-      rect(655, 330, 60, 20);
+      abillity--; 
+      scrollSpeed = initScrollSpeed / 3; // scrollSpeed -> 1/3
+      for (ObjectCar o : obj) {
+        o.carSpeed = o.initCarSpeed / 2; // objectSpeed -> 1/2
+      }
+    } else {
+      pressedSpacebar = false;
     }
-    if (abillity >= 30) {
-      rect(655, 305, 60, 20);
+  } else {  
+    abillity++;
+    scrollSpeed = initScrollSpeed; // scrollSpeed -> origin
+    for (ObjectCar o : obj) {
+      o.carSpeed = o.initCarSpeed;
     }
-    if (abillity >= 60) {
-      rect(655, 280, 60, 20);
-    }
-    if (abillity >= 90) {
-      rect(655, 255, 60, 20);
-    }
-    if (abillity >= 100) {
-      rect(655, 230, 60, 20);
-    }
-    /*********************/
-  
+  }
+
+  abillity = constrain(abillity, 0, 100);
+
+  /****** TEXT *********/
+  textSize(40);
+  fill(0, 255, 0);
+  String f = Float.toString(Math.round(frameRate));
+  text(f, 50, 50);
+
+  fill(0, 0, 0, 100);
+  rect(655, 100, 70, 140);
+
+  fill(255, 255, 0);
+  textSize(25);
+  text("LIFE", 655, 60);
+  text(life, 655, 90);
+  textSize(18);
+  text("SCORE", 655, 120);
+  textSize(20);
+  text(score, 655, 150);
+
+  fill(0, 0, 0, 100);
+  rect(655, 270, 70, 170);
+  fill(90, 234, 190);
+  textSize(15);
+  text("ABILLITY", 655, 205);
+  if (abillity > 0) {
+    rect(655, 330, 60, 20);
+  }
+  if (abillity >= 30) {
+    rect(655, 305, 60, 20);
+  }
+  if (abillity >= 60) {
+    rect(655, 280, 60, 20);
+  }
+  if (abillity >= 90) {
+    rect(655, 255, 60, 20);
+  }
+  if (abillity >= 100) {
+    rect(655, 230, 60, 20);
+  }
+  /*********************/
 }
 
 void settingScene() {
-    /**** Background *****/
-    tint(255, 200);
-    image(sceneImgs[2], 0, 0, width, height);
-    noTint();
-    /*********************/
+  /**** Background *****/
+  tint(255, 200);
+  image(sceneImgs[2], 0, 0, width, height);
+  noTint();
+  /*********************/
 
-    /****** Button *******/
-    difficultyEasyBtn.create();
-    difficultyNormalBtn.create();
-    difficultyHardBtn.create();
-    dayBtn.create();
-    nightBtn.create();
-    previousBtn.create();
-    /**********************/
-    
-    /****** TEXT *********/
-    pushMatrix();
-    textSize(60);
-    textFont(font, 60);
-    textAlign(CENTER);
-    fill(70,70,70);
-    text("Difficulty", 133, 83);
-    fill(255, 255,255);
-    text("Difficulty", 130, 80);
-    fill(70,70,70);
-    textSize(45);
-    text("Appearance", 141, 453);
-    fill(255, 255,255);
-    text("Appearance", 138, 450);
-    fill(70,70,70);
-    textSize(60);
-    text("Preview", 493, 83);
-    fill(255, 255,255);
-    text("Preview", 490, 80);
-    popMatrix();
-     
-    /*********************/
-    
-    /**** Image *****/
-    pushMatrix();
-    tint(255, 225);
-    image(currentPreviewImg, 300, 150, width/1.8, height/1.8);
-    noTint();
-    popMatrix();
-    /*********************/
+  /****** Button *******/
+  difficultyEasyBtn.create();
+  difficultyNormalBtn.create();
+  difficultyHardBtn.create();
+  dayBtn.create();
+  nightBtn.create();
+  previousBtn.create();
+  /**********************/
+
+  /****** TEXT *********/
+  pushMatrix();
+  textSize(60);
+  textFont(font, 60);
+  textAlign(CENTER);
+  fill(70, 70, 70);
+  text("Difficulty", 133, 83);
+  fill(255, 255, 255);
+  text("Difficulty", 130, 80);
+  fill(70, 70, 70);
+  textSize(45);
+  text("Appearance", 141, 453);
+  fill(255, 255, 255);
+  text("Appearance", 138, 450);
+  fill(70, 70, 70);
+  textSize(60);
+  text("Preview", 493, 83);
+  fill(255, 255, 255);
+  text("Preview", 490, 80);
+  popMatrix();
+
+  /*********************/
+
+  /**** Image *****/
+  pushMatrix();
+  tint(255, 225);
+  image(currentPreviewImg, 300, 150, width/1.8, height/1.8);
+  noTint();
+  popMatrix();
+  /*********************/
 }
 
 void gameOverScene() {
-    /**** Background *****/
-    tint(255, 100); // tint(gray, alpha);
-    image(sceneImgs[3], 0, 0, width, height);
-    noTint();
-    fill(255, 0, 0);
-    textSize(60);
-    text("Game Over", 360, 180);
-    textSize(40);
-    text("Your Score", 360, 250);
-    textSize(80);
-    fill(240, 197, 80); 
-    text(score, 360, 350);
-    fill(255, 0, 0);
-    textSize(50);
-    text("Click to Continue !", 360, 700);
-    /*********************/
+  /**** Background *****/
+  tint(255, 100); // tint(gray, alpha);
+  image(sceneImgs[3], 0, 0, width, height);
+  noTint();
+  fill(255, 0, 0);
+  textSize(60);
+  text("Game Over", 360, 180);
+  textSize(40);
+  text("Your Score", 360, 250);
+  textSize(80);
+  fill(240, 197, 80); 
+  text(score, 360, 350);
+  fill(255, 0, 0);
+  textSize(50);
+  text("Click to Continue !", 360, 700);
+  /*********************/
 }
 
 void isGameOver(int life) {
@@ -558,17 +555,17 @@ class Button {
     textSize(textSize);
     text(btnName, btnX, btnY);
   }
-  
+
   void setColor(color inputBtnColor, color inputTextColor) {
     this.btnColor = inputBtnColor;
     this.btnCurColor = btnColor;
     this.textColor = inputTextColor;
   }
-  
+
   void setTextSize(int inputSize) {
     textSize = inputSize;
   }
-  
+
   boolean isClicked(int inputX, int inputY) {
     if (inputX > btnX - (btnW / 2) && inputX < btnX + (btnW / 2) && inputY > btnY - (btnH / 2) && inputY < btnY + (btnH / 2)) {
       return true;
@@ -690,7 +687,7 @@ class Car {
     carCollide(carX, carY, prevX, prevY);
     wallCollide(carX);
     carLoop(carY);
-    
+
 
     if (bAccel == true) {
       carSpeed = inertia += .1;
@@ -751,16 +748,17 @@ class Car {
       carY = 0;
     }
   }
-  
 }
 
 class ObjectCar {
   float carSpeed = random(objMinSpeed, objMaxSpeed);
   float initCarSpeed = carSpeed;
-  int[] reverseDesignList= {1, 2}; 
+  int[] reverseDesignList = {1, 2};
+  int[] forwardDesignList = {1};
   int[] laneList = {LANE_1, LANE_2, LANE_3, LANE_4};
   int carX = laneList[(int)random(0, 4)];
   int reverseDesign = reverseDesignList[(int)random(0, 2)];
+  int forwardDesign = forwardDesignList[(int)random(0, 1)];
   float carY1 = 0; // top of screen
   float carY2 = height; // bottom of screen
   private static final int carW = 40;
@@ -770,7 +768,7 @@ class ObjectCar {
   private static final int LANE_2 = 300;
   private static final int LANE_3 = 415;
   private static final int LANE_4 = 530;
-  
+
   public ObjectCar() {
     changeLane();
   }
@@ -779,24 +777,24 @@ class ObjectCar {
     if (lane == "reverse") {
       move();
       switch(reverseDesign) {
-        case 0:
-          reverseDesign1();
-          break;
-        case 1:
-          reverseDesign2();
-          break;
+      case 0:
+        reverseDesign1();
+        break;
+      case 1:
+        reverseDesign2();
+        break;
       }
     } 
     if (lane == "forward") {
       move();
-      pushMatrix();
-      translate(carX, carY2);
-      fill(200);
-      rect(0, 0, carW, carH);
-      fill(241, 255, 49);
-      rect(-13, -25, 14, 10);
-      rect(13, -25, 14, 10);
-      popMatrix();
+      switch(forwardDesign) {
+      case 0:
+        forwardDesign1();
+        break;
+      case 1:
+        //forwardDesign2();
+        break;
+      }
     }
   }
 
@@ -830,8 +828,7 @@ class ObjectCar {
   }
   void changeDesign() { 
     //carColor = color(random(0, 255), random(0, 255), random(0, 255));
-    reverseDesign = (int)random(0,reverseDesignList.length);
-    
+    reverseDesign = (int)random(0, reverseDesignList.length);
   }
   void changeLane() {
     if (carX == LANE_1 || carX == LANE_2) {
@@ -841,146 +838,162 @@ class ObjectCar {
       lane = "forward";
     }
   }
-  
+
   void reverseDesign1() {
-      pushMatrix();
-      translate(carX, carY1);
-      //bumper
-      stroke(0, 0, 255);
-      fill(255, 255, 255);
-      ellipse(0, -28, 40, 15);
-      ellipse(0, 28, 42, 15);
-      noStroke();
-  
-      //tire
-      fill(0);
-      ellipse(-22, -13, 6, 12);
-      ellipse(22, -13, 6, 12);
-      ellipse(-22, 20, 6, 12);
-      ellipse(22, 20, 6, 12);
-  
-      // body
-      fill(255);
-      rect(0, 0, carW, carH);
-  
-      // light
-      stroke(100);
-      strokeWeight(1);
-      fill(241, 255, 49);
-      rect(-13, 25, 14, 10);
-      rect(13, 25, 14, 10);
-      noStroke();
-  
-      // up
-      fill(198, 198, 198);
-      rect(0, 0, 30, 40);
-  
-      // center : White
-      stroke(0);
-      strokeWeight(2);
-      fill(255, 255, 255);
-      rect(0, 0, 8, 8);
-      noStroke();
-  
-      // left : Red
-      stroke(0);
-      strokeWeight(2);
-      fill(255, 0, 0);
-      rect(-8, 0, 8, 8);
-      noStroke();
-  
-      // right : Blue
-      stroke(0);
-      strokeWeight(2);
-      fill(0, 0, 255);
-      rect(8, 0, 8, 8);
-      noStroke();
-  
-      //side line
-      stroke(0, 0, 255);
-      strokeWeight(3);
-      line(-20, -20, -20, 20);
-      line(20, 20, 20, -20);
-      noStroke();
-  
-      //back light
-      stroke(255, 0, 0);
-      strokeWeight(3);
-      line(-18, -25, -8, -25);
-      line(8, -25, 18, -25);
-      noStroke();
-      
-      popMatrix();
+    pushMatrix();
+    translate(carX, carY1);
+    //bumper
+    stroke(0, 0, 255);
+    fill(255, 255, 255);
+    ellipse(0, -28, 40, 15);
+    ellipse(0, 28, 42, 15);
+    noStroke();
+
+    //tire
+    fill(0);
+    ellipse(-22, -13, 6, 12);
+    ellipse(22, -13, 6, 12);
+    ellipse(-22, 20, 6, 12);
+    ellipse(22, 20, 6, 12);
+
+    // body
+    fill(255);
+    rect(0, 0, carW, carH);
+
+    // light
+    stroke(100);
+    strokeWeight(1);
+    fill(241, 255, 49);
+    rect(-13, 25, 14, 10);
+    rect(13, 25, 14, 10);
+    noStroke();
+
+    // up
+    fill(198, 198, 198);
+    rect(0, 0, 30, 40);
+
+    // center : White
+    stroke(0);
+    strokeWeight(2);
+    fill(255, 255, 255);
+    rect(0, 0, 8, 8);
+    noStroke();
+
+    // left : Red
+    stroke(0);
+    strokeWeight(2);
+    fill(255, 0, 0);
+    rect(-8, 0, 8, 8);
+    noStroke();
+
+    // right : Blue
+    stroke(0);
+    strokeWeight(2);
+    fill(0, 0, 255);
+    rect(8, 0, 8, 8);
+    noStroke();
+
+    //side line
+    stroke(0, 0, 255);
+    strokeWeight(3);
+    line(-20, -20, -20, 20);
+    line(20, 20, 20, -20);
+    noStroke();
+
+    //back light
+    stroke(255, 0, 0);
+    strokeWeight(3);
+    line(-18, -25, -8, -25);
+    line(8, -25, 18, -25);
+    noStroke();
+
+    popMatrix();
   }
   void reverseDesign2() {
-      pushMatrix();
-      translate(carX, carY1);
-      //bumper
-      stroke(0, 0, 255);
-      fill(255, 255, 255);
-      ellipse(0, -28, 40, 15);
-      ellipse(0, 28, 42, 15);
-      noStroke();
-  
-      //tire
-      fill(0);
-      ellipse(-22, -13, 6, 12);
-      ellipse(22, -13, 6, 12);
-      ellipse(-22, 20, 6, 12);
-      ellipse(22, 20, 6, 12);
-  
-      // body
-      fill(0);
-      rect(0, 0, carW, carH);
-  
-      // light
-      stroke(100);
-      strokeWeight(1);
-      fill(255, 0, 0);
-      rect(-13, 25, 14, 10);
-      rect(13, 25, 14, 10);
-      noStroke();
-  
-      // up
-      fill(198, 198, 198);
-      rect(0, 0, 30, 40);
-  
-      // center : White
-      stroke(0);
-      strokeWeight(2);
-      fill(200, 200, 255);
-      rect(0, 0, 8, 8);
-      noStroke();
-  
-      // left : Red
-      stroke(0);
-      strokeWeight(2);
-      fill(255, 0, 0);
-      rect(-8, 0, 8, 8);
-      noStroke();
-  
-      // right : Blue
-      stroke(0);
-      strokeWeight(2);
-      fill(0, 0, 255);
-      rect(8, 0, 8, 8);
-      noStroke();
-  
-      //side line
-      stroke(0, 0, 255);
-      strokeWeight(3);
-      line(-20, -20, -20, 20);
-      line(20, 20, 20, -20);
-      noStroke();
-  
-      //back light
-      stroke(255, 0, 0);
-      strokeWeight(3);
-      line(-18, -25, -8, -25);
-      line(8, -25, 18, -25);
-      noStroke();
-      
-      popMatrix();
+    pushMatrix();
+    translate(carX, carY1);
+    //bumper
+    stroke(0, 0, 255);
+    fill(255, 255, 255);
+    ellipse(0, -28, 40, 15);
+    ellipse(0, 28, 42, 15);
+    noStroke();
+
+    //tire
+    fill(0);
+    ellipse(-22, -13, 6, 12);
+    ellipse(22, -13, 6, 12);
+    ellipse(-22, 20, 6, 12);
+    ellipse(22, 20, 6, 12);
+
+    // body
+    fill(0);
+    rect(0, 0, carW, carH);
+
+    // light
+    stroke(100);
+    strokeWeight(1);
+    fill(255, 0, 0);
+    rect(-13, 25, 14, 10);
+    rect(13, 25, 14, 10);
+    noStroke();
+
+    // up
+    fill(198, 198, 198);
+    rect(0, 0, 30, 40);
+
+    // center : White
+    stroke(0);
+    strokeWeight(2);
+    fill(200, 200, 255);
+    rect(0, 0, 8, 8);
+    noStroke();
+
+    // left : Red
+    stroke(0);
+    strokeWeight(2);
+    fill(255, 0, 0);
+    rect(-8, 0, 8, 8);
+    noStroke();
+
+    // right : Blue
+    stroke(0);
+    strokeWeight(2);
+    fill(0, 0, 255);
+    rect(8, 0, 8, 8);
+    noStroke();
+
+    //side line
+    stroke(0, 0, 255);
+    strokeWeight(3);
+    line(-20, -20, -20, 20);
+    line(20, 20, 20, -20);
+    noStroke();
+
+    //back light
+    stroke(255, 0, 0);
+    strokeWeight(3);
+    line(-18, -25, -8, -25);
+    line(8, -25, 18, -25);
+    noStroke();
+
+    popMatrix();
   }
-  
+
+  void forwardDesign1() {
+    pushMatrix();
+    translate(carX, carY2);
+    
+    //body
+    fill(255);
+    rect(0, 0, carX, carY2);
+    
+    //tire
+    fill(0);
+    ellipse(-22, -13, 6, 12);
+    ellipse(22, -13, 6, 12);
+    ellipse(-22, 20, 6, 12);
+    ellipse(22, 20, 6, 12);
+    popMatrix();
+  }
 }
